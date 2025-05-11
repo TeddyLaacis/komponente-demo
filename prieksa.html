@@ -1,0 +1,3966 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komponente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0a0a12;
+            --secondary-bg: #15151e;
+            --accent-color: #4287f5;
+            --accent-color-rgb: 66, 135, 245;
+            --accent-hover: #2463cc;
+            --text-primary: #f8f8ff;
+            --text-secondary: #c0c0cf;
+            --border-color: #2c2c3a;
+            --border-color-rgb: 44, 44, 58;
+            --danger-color: #ff3e3e;
+            --success-color: #42d97c;
+            --transition-bezier: cubic-bezier(0.22, 1, 0.36, 1);
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.25);
+            --gradient-primary: linear-gradient(135deg, var(--accent-color), #6a5cf5);
+            --primary-bg-light: #f0f4f8;
+            --secondary-bg-light: #ffffff;
+            --text-primary-light: #1a1a1a;
+            --text-secondary-light: #666666;
+            --border-color-light: #d1d5db;
+            --hero-light-bg: rgb(1, 45, 102);
+            --bg-card: #15151e;
+            --bg-card-header: #1a1a24;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --text-muted: #88889e;
+            --border-color-subtle: #252533;
+            --primary: #4287f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body.light-mode {
+            background-color: var(--primary-bg-light);
+            color: var(--text-primary-light);
+            --bg-card: #ffffff;
+            --bg-card-header: #f5f5f5;
+            --bg-hover: rgba(0, 0, 0, 0.05);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-muted: #6e6e8e;
+            --border-color: #d0d0e0;
+            --border-color-subtle: #e0e0f0;
+            --primary: #4287f5;
+        }
+
+        body.light-mode .container,
+        body.light-mode .build-table,
+        body.light-mode .total-section,
+        body.light-mode .fps-calculator,
+        body.light-mode header {
+            background-color: var(--secondary-bg-light);
+            color: var(--text-primary-light);
+        }
+
+        body.light-mode .build-table thead {
+            background-color: rgba(66, 135, 245, 0.05);
+        }
+
+        body.light-mode .build-table td {
+            border-bottom: 1px solid var(--border-color-light);
+        }
+
+        body.light-mode .category-link,
+        body.light-mode .total-label,
+        body.light-mode .recommendation-label {
+            color: var(--text-secondary-light);
+        }
+
+        body.light-mode .star,
+        body.light-mode .shooting-star {
+            display: none;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+            z-index: 1;
+            border-radius: 25px;
+        }
+
+        header {
+            background-color: rgba(21, 21, 30, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 25px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: calc(100% - 160px);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+        }
+
+        header.scrolled {
+            width: 100%;
+            top: 0;
+            border-radius: 0;
+            transform: translateX(-50%);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-color), #6a5cf5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 400px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            width: 100%;
+            height: 40px;
+        }
+
+        .nav-links a,
+        .nav-links button {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            height: 36px;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        body.light-mode .nav-links a,
+        body.light-mode .nav-links button {
+            color: var(--text-primary-light);
+        }
+
+        .nav-links a:hover,
+        .nav-links button:hover {
+            background: rgba(66, 135, 245, 0.2);
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .language-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 36px;
+            gap: 8px;
+        }
+
+        .language-btn span {
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .theme-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .theme-btn i {
+            transition: transform 0.3s ease, color 0.3s ease;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+        }
+
+        body.light-mode .theme-btn i.fa-sun {
+            color: #FFB800;
+        }
+
+        body:not(.light-mode) .theme-btn i.fa-moon {
+            color: #A0A0FF;
+        }
+
+        .theme-btn i.fa-sun {
+            transform: rotate(360deg);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 360px;
+            width: 200%;
+            margin-left: -50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(5, 5, 9, 0.95), rgba(3, 3, 7, 0.98)), 
+                linear-gradient(180deg, var(--primary-bg), #0a0a14);
+            margin-bottom: 40px;
+            border-bottom-left-radius: 50% 100%;
+            border-bottom-right-radius: 50% 100%;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        body.light-mode .hero-section {
+            background: linear-gradient(90deg, rgba(1, 25, 60, 0.95), rgba(1, 25, 60, 0.98));
+        }
+
+        .hero-section .universe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-section h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff; /* Fixed to always be white */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 1;
+            text-shadow: 0 0 15px rgba(66, 135, 245, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: glow 3s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 15px rgba(66, 135, 245, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5); }
+            50% { text-shadow: 0 0 25px rgba(66, 135, 245, 0.8), 0 2px 10px rgba(0, 0, 0, 0.5); }
+            100% { text-shadow: 0 0 15px rgba(66, 135, 245, 0.5), 0 2px 10px rgba(0, 0, 0, 0.5); }
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            opacity: 0.5;
+            border-radius: 50%;
+            animation: pulseStar 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseStar {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.3); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        .star1 { animation-delay: 0s; }
+        .star2 { animation-delay: 0.2s; }
+        .star3 { animation-delay: 0.4s; }
+        .star4 { animation-delay: 0.6s; }
+        .star5 { animation-delay: 0.8s; }
+        .star6 { animation-delay: 1s; }
+        .star7 { animation-delay: 1.2s; }
+        .star8 { animation-delay: 1.4s; }
+        .star9 { animation-delay: 1.6s; }
+        .star10 { animation-delay: 1.8s; }
+        .star11 { animation-delay: 2s; }
+        .star12 { animation-delay: 2.2s; }
+        .star13 { animation-delay: 2.4s; }
+        .star14 { animation-delay: 2.6s; }
+        .star15 { animation-delay: 2.8s; }
+        .star16 { animation-delay: 3s; }
+        .star17 { animation-delay: 3.2s; }
+        .star18 { animation-delay: 3.4s; }
+        .star19 { animation-delay: 3.6s; }
+        .star20 { animation-delay: 3.8s; }
+        .star21 { animation-delay: 4s; }
+        .star22 { animation-delay: 4.2s; }
+        .star23 { animation-delay: 4.4s; }
+        .star24 { animation-delay: 4.6s; }
+        .star25 { animation-delay: 4.8s; }
+        .star26 { animation-delay: 5s; }
+        .star27 { animation-delay: 5.2s; }
+        .star28 { animation-delay: 5.4s; }
+        .star29 { animation-delay: 5.6s; }
+        .star30 { animation-delay: 5.8s; }
+
+        .shooting-star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            opacity: 0;
+            border-radius: 50%;
+            filter: blur(1px);
+            box-shadow: 0 0 8px 1px rgba(255, 255, 255, 0.7);
+            animation: shoot 1.5s ease-in-out;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes shoot {
+            0% { opacity: 0; transform: translateX(0) translateY(0); }
+            10% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(-400px) translateY(250px); }
+        }
+
+        .shooting-star1 { top: 10%; left: 80%; }
+        .shooting-star2 { top: 25%; left: 95%; }
+
+        .build-table {
+            width: 100%;
+            margin: 30px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: var(--secondary-bg);
+            table-layout: fixed;
+        }
+
+        .build-table thead {
+            background-color: rgba(66, 135, 245, 0.1);
+        }
+
+        .build-table th:first-child,
+        .build-table td:first-child {
+            width: 40%;
+        }
+
+        .build-table th:nth-child(2),
+        .build-table td:nth-child(2) {
+            width: 30%;
+        }
+
+        .build-table th:nth-child(3),
+        .build-table td:nth-child(3) {
+            width: 20%;
+        }
+
+        .build-table th:last-child,
+        .build-table td:last-child {
+            width: 10%;
+        }
+
+        .build-table th {
+            padding: 16px;
+            font-weight: 600;
+            color: var(--accent-color);
+            text-align: left;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .build-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .build-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .build-table tbody tr {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .build-table tbody tr:hover {
+            background-color: rgba(66, 135, 245, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .component-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(66, 135, 245, 0.1);
+            border-radius: 8px;
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+
+        .category-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selected-component {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .price-cell {
+            font-weight: 600;
+            color: var(--accent-color);
+            position: relative;
+        }
+
+        .empty-price {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.7;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            color: var(--danger-color);
+            background-color: rgba(255, 62, 62, 0.1);
+            opacity: 1;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .total-label {
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 15px;
+            color: var(--text-secondary);
+        }
+
+        #total-price, #recommended-wattage {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .psu-recommendation {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommendation-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .fa-info-circle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: help;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin: 20px 0;
+            margin-right: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn {
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(66, 135, 245, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(66, 135, 245, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(66, 135, 245, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(66, 135, 245, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(66, 135, 245, 0); }
+        }
+
+        .category-link {
+            font-weight: 600;
+            color: #a7a6a6;
+            text-decoration: none;
+        }
+
+        .product-link {
+            color: #487dbb;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .fps-calculator {
+            margin: 40px 0;
+            padding: 40px;
+            background-color: var(--secondary-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            transition: all 0.5s var(--transition-bezier);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fps-calculator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #4f46e5);
+            z-index: 1;
+        }
+
+        .fps-calculator:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .fps-calculator h3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .fps-calculator h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #4f46e5);
+            border-radius: 4px;
+        }
+
+        body.light-mode .fps-calculator h3 {
+            color: var(--text-primary-light);
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin: 0 auto 40px auto;
+            max-width: 90%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.5s var(--transition-bezier);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+            height: 300px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s var(--transition-bezier) forwards;
+            aspect-ratio: 3/4;
+            justify-self: center;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .game-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 25px rgba(var(--accent-color-rgb), 0.35);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 1s var(--transition-bezier), filter 0.5s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%);
+            z-index: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .game-card:hover::before {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
+        }
+
+        .fps-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: transparent;
+            color: white;
+            text-align: center;
+            padding: 18px 5px;
+            font-size: 22px;
+            font-weight: 800;
+            z-index: 2;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            transition: all 0.5s var(--transition-bezier);
+            letter-spacing: -0.5px;
+        }
+
+        .game-card:hover .fps-overlay {
+            padding-bottom: 24px;
+            font-size: 24px;
+            transform: translateY(-5px);
+            color: #fff;
+            text-shadow: 0 0 15px rgba(var(--accent-color-rgb), 1);
+        }
+
+        .game-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            z-index: 2;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s var(--transition-bezier);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .game-card:hover .game-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .settings-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(var(--border-color-rgb), 0.15);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s var(--transition-bezier) forwards 0.7s;
+        }
+
+        .settings-group {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 16px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .settings-group label {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-right: 15px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .settings-group:hover label {
+            color: var(--text-primary);
+        }
+
+        body.light-mode .settings-group label {
+            color: var(--text-primary-light);
+        }
+
+        body.light-mode .settings-group:hover label {
+            color: #000000;
+        }
+
+        .toggle-btn {
+            padding: 12px 22px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            background-color: rgba(var(--border-color-rgb), 0.3);
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s var(--transition-bezier);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        body.light-mode .toggle-btn {
+            background-color: rgba(209, 213, 219, 0.3);
+            color: var(--text-primary-light);
+        }
+
+        body.light-mode .toggle-btn:not(.active):hover {
+            color: #000000;
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+        }
+
+        body.light-mode .toggle-btn.active {
+            color: #ffffff;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+
+        .toggle-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-color), #4f46e5);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
+            font-weight: 800;
+        }
+
+        .toggle-btn:not(.active):hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+            color: var(--text-primary);
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+            box-shadow: 0 5px 15px rgba(var(--accent-color-rgb), 0.2);
+        }
+
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.5); }
+            50% { text-shadow: 0 0 25px rgba(var(--accent-color-rgb), 0.9), 0 0 10px rgba(255,255,255,0.5); }
+            100% { text-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.5); }
+        }
+
+        .fps-overlay.has-fps {
+            animation: pulseGlow 3s infinite;
+        }
+
+        @keyframes fpsCalculating {
+            0% { opacity: 0.4; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.4; transform: scale(0.95); }
+        }
+
+        .fps-overlay.calculating {
+            animation: fpsCalculating 0.8s infinite;
+        }
+
+        @keyframes buttonPress {
+            0% { transform: scale(1); }
+            40% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+
+        .toggle-btn.pressed {
+            animation: buttonPress 0.4s var(--transition-bezier);
+        }
+
+        @keyframes blurPopOut {
+            0% { filter: blur(15px); opacity: 0; transform: scale(0.7); }
+            60% { filter: blur(2px); opacity: 0.9; transform: scale(1.15); }
+            100% { filter: blur(0); opacity: 1; transform: scale(1); }
+        }
+
+        .fps-overlay.has-fps {
+            animation: blurPopOut 0.8s var(--transition-bezier) forwards, pulseGlow 3s infinite 0.8s;
+        }
+
+        .fps-overlay {
+            transition: filter 0.3s ease, transform 0.5s var(--transition-bezier), opacity 0.3s ease;
+        }
+
+        @media (max-width: 992px) {
+            .game-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .fps-calculator {
+                padding: 30px 20px;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .game-card {
+                height: 200px;
+            }
+
+            .fps-overlay {
+                padding: 12px 5px;
+                font-size: 18px;
+            }
+
+            .toggle-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .settings-section {
+                gap: 15px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .settings-group {
+                justify-content: center;
+            }
+        }
+
+        .component-image {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-right: 10px;
+            min-width: 40px;
+            z-index: 1;
+        }
+
+        .component-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .price-text {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .price-text:hover {
+            background: var(--bg-hover);
+        }
+
+        .tooltip-icon {
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .price-text:hover .tooltip-icon {
+            color: var(--primary);
+        }
+
+        #price-history-tooltip {
+            display: none;
+            position: absolute;
+            width: 300px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            padding: 0;
+            max-height: 320px;
+            overflow-y: auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        #price-history-tooltip.active {
+            display: block;
+        }
+
+        .tooltip-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-card-header);
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tooltip-close {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .tooltip-close:hover {
+            color: var(--primary);
+        }
+
+        .price-history-entries {
+            padding: 8px 0;
+        }
+
+        .price-history-entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color-subtle);
+            transition: background 0.2s ease;
+        }
+
+        .price-history-entry:hover {
+            background: var(--bg-hover);
+        }
+
+        .price-history-entry:last-child {
+            border-bottom: none;
+        }
+
+        .entry-price {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .entry-price.increase {
+            color: #ff5252;
+        }
+
+        .entry-price.decrease {
+            color: #4caf50;
+        }
+
+        .entry-timestamp {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .price-percentage {
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .price-percentage.increase {
+            background: rgba(255, 82, 82, 0.15);
+            color: #ff5252;
+        }
+
+        .price-percentage.decrease {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+
+        .no-history {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        #price-history-tooltip::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #price-history-tooltip::-webkit-scrollbar-track {
+            background: var(--bg-card);
+            border-radius: 12px;
+        }
+
+        #price-history-tooltip::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 12px;
+        }
+
+        #price-history-tooltip::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-container">
+                <h1 class="logo">KOMPONENTE.LV</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="recommendations.html" data-key="recommendations">Rekomendācijas</a>
+                <a href="favorites.html" data-key="favoritesNav">Favorīti</a>
+                <a href="index.html" data-key="home">Home</a>
+                <a href="saved-builds.html" data-key="saved">Saglabātie</a>
+                <button class="language-btn" id="language-toggle">
+                    <i class="fas fa-globe"></i>
+                    <span id="language-text">LV</span>
+                </button>
+                <button class="theme-btn" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="universe">
+            <span class="star star1" style="top: 5%; left: 10%;"></span>
+            <span class="star star2" style="top: 15%; left: 30%;"></span>
+            <span class="star star3" style="top: 25%; left: 60%;"></span>
+            <span class="star star4" style="top: 35%; left: 80%;"></span>
+            <span class="star star5" style="top: 45%; left: 15%;"></span>
+            <span class="star star6" style="top: 55%; left: 40%;"></span>
+            <span class="star star7" style="top: 65%; left: 70%;"></span>
+            <span class="star star8" style="top: 75%; left: 25%;"></span>
+            <span class="star star9" style="top: 85%; left: 50%;"></span>
+            <span class="star star10" style="top: 95%; left: 90%;"></span>
+            <span class="star star11" style="top: 10%; left: 20%;"></span>
+            <span class="star star12" style="top: 20%; left: 40%;"></span>
+            <span class="star star13" style="top: 30%; left: 70%;"></span>
+            <span class="star star14" style="top: 40%; left: 90%;"></span>
+            <span class="star star15" style="top: 50%; left: 25%;"></span>
+            <span class="star star16" style="top: 60%; left: 50%;"></span>
+            <span class="star star17" style="top: 70%; left: 80%;"></span>
+            <span class="star star18" style="top: 80%; left: 35%;"></span>
+            <span class="star star19" style="top: 90%; left: 60%;"></span>
+            <span class="star star20" style="top: 5%; left: 95%;"></span>
+            <span class="star star21" style="top: 15%; left: 5%;"></span>
+            <span class="star star22" style="top: 25%; left: 45%;"></span>
+            <span class="star star23" style="top: 35%; left: 65%;"></span>
+            <span class="star star24" style="top: 45%; left: 85%;"></span>
+            <span class="star star25" style="top: 55%; left: 10%;"></span>
+            <span class="star star26" style="top: 65%; left: 30%;"></span>
+            <span class="star star27" style="top: 75%; left: 55%;"></span>
+            <span class="star star28" style="top: 85%; left: 75%;"></span>
+            <span class="star star29" style="top: 95%; left: 15%;"></span>
+            <span class="star star30" style="top: 10%; left: 50%;"></span>
+            <span class="shooting-star shooting-star1"></span>
+            <span class="shooting-star shooting-star2"></span>
+            <span class="shooting-star shooting-star3"></span>
+        </div>
+        <h1 data-key="hero">Izvēlies labākās detaļas savai sistēmai!</h1>
+    </section>
+
+    <div class="container">
+        <table class="build-table fade-in">
+            <thead>
+                <tr>
+                    <th data-key="components">Komponentes</th>
+                    <th data-key="shop">Veikals</th>
+                    <th data-key="price">Cena</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="gpu-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="gpu.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <span class="category-text" id="gpu-name" data-key="gpu">Videokarte</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="gpu-store" class="store-cell">-</td>
+                    <td id="gpu-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="gpu-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="cpu-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="cpu.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <span class="category-text" id="cpu-name" data-key="cpu">Procesors</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="cpu-store" class="store-cell">-</td>
+                    <td id="cpu-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="cpu-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="mb-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="motherboard.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <span class="category-text" id="mb-name" data-key="mb">Mātesplate</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="mb-store" class="store-cell">-</td>
+                    <td id="mb-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="mb-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="ssd-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="ssd.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                                <span class="category-text" id="ssd-name" data-key="ssd">SSD</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="ssd-store" class="store-cell">-</td>
+                    <td id="ssd-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="ssd-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="ram-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="ram.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-memory"></i>
+                                </div>
+                                <span class="category-text" data-key="ram">RAM</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="ram-store" class="store-cell">-</td>
+                    <td id="ram-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="ram-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="psu-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="barosanasbloki.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <span class="category-text" data-key="psu">Barošanas Bloks</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="psu-store" class="store-cell">-</td>
+                    <td id="psu-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="psu-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="case-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="korpusi.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-desktop"></i>
+                                </div>
+                                <span class="category-text" data-key="case">Korpuss</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td id="case-store" class="store-cell">-</td>
+                    <td id="case-price" class="price-cell empty-price">-</td>
+                    <td><button class="remove-btn" id="case-remove-btn" style="display:none;"><i class="fas fa-times"></i></button></td>
+                </tr>
+                <tr id="favoriti-row">
+                    <td>
+                        <div class="component-cell">
+                            <a href="favoriti.html" class="category-link">
+                                <div class="component-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <span class="category-text" data-key="favorites">Favorīti</span>
+                            </a>
+                        </div>
+                    </td>
+                    <td class="store-cell">-</td>
+                    <td class="price-cell empty-price">-</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <span class="total-label" data-key="total">Kopējā cena:</span>
+            <span id="total-price">0 EUR</span>
+            <div class="psu-recommendation">
+                <span class="recommendation-label" data-key="psuRec">Ieteicamā PSU jauda: <i class="fas fa-info-circle" title="⚠️ Šis ir aptuvens aprēķins. Aprēķinā tiek ņemtas vērā papildus komponentes. Izvēlieties kvalitatīvu barošanas bloku no pazīstamiem zīmoliem. Vienmēr pārbaudiet konkrēto komponenšu ražotāja ieteikumus!"></i></span>
+                <span id="recommended-wattage" class="price-cell empty-price">-</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-secondary">
+                <i class="fas fa-save"></i> <span data-key="save">Saglabāt komponentes</span>
+            </button>
+            <button class="btn btn-primary pulse">
+                <i class="fas fa-shopping-cart"></i> <span data-key="buy">Pirkt komponentes</span>
+            </button>
+        </div>
+
+        <div class="fps-calculator fade-in">
+            <h3 data-key="fpsCalc">FPS Kalkulators</h3>
+            <div class="game-grid">
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/32982_IGDB-285x380.jpg" alt="GTA 5">
+                    <div class="game-title">GTA 5</div>
+                    <div class="fps-overlay" id="fps-gta5">-</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/344035090_IGDB-285x380.jpg" alt="Kingdom Come: Deliverance 2">
+                    <div class="game-title">Kingdom Come: Deliverance 2</div>
+                    <div class="fps-overlay" id="fps-kcd2">-</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/33214-285x380.jpg" alt="Fortnite">
+                    <div class="game-title">Fortnite</div>
+                    <div class="fps-overlay" id="fps-fortnite">-</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/1672324422-285x380.jpg" alt="Black Ops 6">
+                    <div class="game-title">Black Ops 6</div>
+                    <div class="fps-overlay" id="fps-blackops6">-</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/65876-285x380.jpg" alt="Cyberpunk 2077">
+                    <div class="game-title">Cyberpunk 2077</div>
+                    <div class="fps-overlay" id="fps-cyberpunk">-</div>
+                </div>
+                <div class="game-card">
+                    <img src="https://static-cdn.jtvnw.net/ttv-boxart/32399-285x380.jpg" alt="CS2">
+                    <div class="game-title">CS2</div>
+                    <div class="fps-overlay" id="fps-cs2">-</div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-group">
+                    <label data-key="resolution">Izšķirtspēja:</label>
+                    <button class="toggle-btn active" data-setting="resolution" data-value="1080p">1080p</button>
+                    <button class="toggle-btn" data-setting="resolution" data-value="1440p">1440p</button>
+                    <button class="toggle-btn" data-setting="resolution" data-value="4K">4K</button>
+                </div>
+                <div class="settings-group">
+                    <label data-key="quality">Kvalitāte:</label>
+                    <button class="toggle-btn" data-setting="quality" data-value="low">Low</button>
+                    <button class="toggle-btn active" data-setting="quality" data-value="medium">Medium</button>
+                    <button class="toggle-btn" data-setting="quality" data-value="high">High</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="price-history-tooltip" class="price-history-tooltip"></div>
+
+    <script>
+        // Translations
+        const translations = {
+            lv: {
+                hero: "Izvēlies labākās detaļas savai sistēmai",
+                components: "Komponentes",
+                shop: "Veikals",
+                price: "Cena",
+                gpu: "Videokarte",
+                cpu: "Procesors",
+                mb: "Mātesplate",
+                ssd: "SSD",
+                ram: "RAM",
+                psu: "Barošanas Bloks",
+                case: "Korpuss",
+                favorites: "Favorīti",
+                total: "Kopējā cena:",
+                psuRec: "Ieteicamā PSU jauda:",
+                save: "Saglabāt komponentes",
+                buy: "Pirkt komponentes",
+                fpsCalc: "FPS Kalkulators",
+                resolution: "Izšķirtspēja:",
+                quality: "Kvalitāte:",
+                recommendations: "Rekomendācijas",
+                favoritesNav: "Favorīti",
+                home: "Sākums",
+                saved: "Saglabātie",
+                priceHistory: "Cenu vēsture",
+                noPriceHistory: "Cenu vēsture nav pieejama",
+                unavailable: "Nav pieejams",
+                compatibilityWarning: "Nesaderīgas komponentes: CPU ligzda {cpuSocket} neatbilst mātesplates ligzdai {mbSocket}",
+                socketMismatchAMD: "AMD CPU prasa {cpuSocket} mātesplati, bet izvēlētā mātesplate ir {mbSocket}."
+            },
+            en: {
+                hero: "Choose the best components for your system",
+                components: "Components",
+                shop: "Store",
+                price: "Price",
+                gpu: "Graphics Card",
+                cpu: "Processor",
+                mb: "Motherboard",
+                ssd: "SSD",
+                ram: "RAM",
+                psu: "Power Supply",
+                case: "Case",
+                favorites: "Favorites",
+                total: "Total price:",
+                psuRec: "Recommended PSU wattage:",
+                save: "Save components",
+                buy: "Buy components",
+                fpsCalc: "FPS Calculator",
+                resolution: "Resolution:",
+                quality: "Quality:",
+                recommendations: "Recommendations",
+                favoritesNav: "Favorites",
+                home: "Home",
+                saved: "Saved",
+                priceHistory: "Price History",
+                noPriceHistory: "No price history available",
+                unavailable: "Unavailable",
+                compatibilityWarning: "Incompatible components: CPU socket {cpuSocket} doesn't match motherboard socket {mbSocket}",
+                socketMismatchAMD: "AMD CPU requires {cpuSocket} motherboard, but selected motherboard has {mbSocket}."
+            }
+        };
+        
+        // Utility Functions
+        function escapeString(str) {
+            return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/`/g, '\\`').replace(/\n/g, '');
+        }
+        
+        function formatTimestampToHour(timestamp) {
+            const date = new Date(timestamp);
+            date.setMinutes(date.getMinutes() < 30 ? 0 : 60);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = '00';
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+        
+        function normalizeUrl(url, preserveQuery = false) {
+            if (!url || url === '#') return url;
+            try {
+                const parsed = new URL(url);
+                parsed.pathname = parsed.pathname.replace(/\/+$/, '').replace(/\/+/g, '/');
+                parsed.hostname = parsed.hostname.toLowerCase();
+                if (!preserveQuery) {
+                    parsed.search = '';
+                }
+                return parsed.toString().replace(/\/$/, '');
+            } catch {
+                console.warn(`Failed to normalize URL: ${url}`);
+                return url;
+            }
+        }
+        
+        function normalizeName(name) {
+            if (!name) return '';
+            return name.replace(/\s*\/\s*/g, '/').replace(/\s+/g, ' ').trim().toLowerCase();
+        }
+        
+        function normalizeSocket(socket) {
+            if (!socket) return socket;
+            if (socket.startsWith('LGA') && !socket.includes(' ')) {
+                return socket.replace('LGA', 'LGA ');
+            }
+            return socket;
+        }
+        
+        // Fetch component prices from CSV files (including SSD)
+        async function fetchComponentPrices() {
+            const csvFiles = [
+                {
+                    type: 'gpu',
+                    file: 'gpu_data_combined.csv',
+                    priceCol: 4,
+                    linkCol: 5,
+                    imageCol: 9,
+                    dataCols: {
+                        name: 0,
+                        shortName: 1,
+                        brand: 2,
+                        model: 3,
+                        store: 6,
+                        memory: 7,
+                        wattage: 8,
+                        imageUrl: 9
+                    }
+                },
+                {
+                    type: 'cpu',
+                    file: 'cpu_data_combined.csv',
+                    priceCol: 9,
+                    linkCol: 10,
+                    imageCol: 13,
+                    dataCols: {
+                        name: 0,
+                        brand: 1,
+                        generation: 2,
+                        series: 3,
+                        socket: 4,
+                        cores: 5,
+                        threads: 6,
+                        baseClock: 7,
+                        tdp: 8,
+                        store: 11,
+                        model: 12,
+                        imageUrl: 13
+                    }
+                },
+                {
+                    type: 'motherboard',
+                    file: 'combined_motherboard_data.csv',
+                    priceCol: 12,
+                    linkCol: 13,
+                    imageCol: 15,
+                    dataCols: {
+                        name: 0,
+                        brand: 1,
+                        platform: 2,
+                        formfactor: 3,
+                        chipset: 4,
+                        socket: 5,
+                        memorytype: 6,
+                        wifi: 7,
+                        bluetooth: 8,
+                        wifitype: 9,
+                        m2slots: 10,
+                        ramslots: 11,
+                        store: 14,
+                        m2interface: 16
+                    }
+                },
+                {
+                    type: 'ssd',
+                    file: 'ssd_data_rd.csv',
+                    priceCol: 2,
+                    linkCol: 9,
+                    imageCol: 11,
+                    dataCols: {
+                        name: 0,
+                        brand: 1,
+                        capacity: 3,
+                        type: 4,
+                        readSpeed: 5,
+                        writeSpeed: 6,
+                        formFactor: 7,
+                        interface: 8,
+                        store: 10,
+                        imageUrl: 11
+                    }
+                }
+            ];
+        
+            const priceData = {};
+        
+            for (const { type, file, priceCol, linkCol, imageCol, dataCols } of csvFiles) {
+                try {
+                    let response = await fetch(`${file}?t=${Date.now()}`);
+                    if (!response.ok) {
+                        console.warn(`Retrying fetch for ${file} due to status ${response.status}`);
+                        response = await fetch(`${file}?t=${Date.now() + 1}`);
+                    }
+                    console.log(`Fetching ${file}: Status ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${file}: ${response.status} ${response.statusText}`);
+                    }
+                    const data = await response.text();
+                    console.log(`CSV ${file} first row:`, data.split("\n")[0]);
+                    const rows = data.split("\n").slice(1).filter(row => row.trim() !== "");
+        
+                    rows.forEach((row, index) => {
+                        try {
+                            const columns = row.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(col => col.trim().replace(/^"(.*)"$/, '$1'));
+                            if (type === 'ssd') {
+                                console.log(`Processing SSD row ${index + 1}:`, columns);
+                            }
+                            if (columns.length > Math.max(priceCol, linkCol, imageCol)) {
+                                const price = parseFloat(columns[priceCol].replace(/[^0-9.-]+/g, "")) || 0;
+                                const link = normalizeUrl(columns[linkCol] || "#", type === 'ssd');
+                                const image = columns[imageCol] || '';
+                                const componentData = { price, image, type, link };
+        
+                                Object.keys(dataCols).forEach(key => {
+                                    let value = columns[dataCols[key]] || '';
+                                    if (type === 'ssd' && ['capacity', 'readSpeed', 'writeSpeed'].includes(key)) {
+                                        const numMatch = value.match(/(\d+)/);
+                                        value = numMatch ? parseInt(numMatch[1], 10) : 0;
+                                    } else if (type === 'gpu' && key === 'memory') {
+                                        const memoryMatch = value.match(/(\d+)\s?(?:GB|G)?/i);
+                                        value = memoryMatch ? parseInt(memoryMatch[1], 10) : 0;
+                                    } else if (type === 'gpu' && key === 'wattage') {
+                                        const wattageMatch = value.match(/(\d{1,3})\s?W\b/i);
+                                        value = wattageMatch ? parseInt(wattageMatch[1], 10) : 0;
+                                    } else if (type === 'cpu' && ['cores', 'threads', 'tdp'].includes(key)) {
+                                        value = parseInt(value.replace(/W$/, ''), 10) || 0;
+                                    } else if (type === 'cpu' && ['baseClock'].includes(key)) {
+                                        value = parseFloat(value) || 0;
+                                    }
+                                    componentData[key] = value;
+                                });
+        
+                                // Normalize SSD type to 'ssd' to avoid validation issues
+                                if (type === 'ssd') {
+                                    componentData.componentType = 'ssd';
+                                }
+        
+                                priceData[link] = componentData;
+                                if (type === 'ssd') {
+                                    const normalizedName = normalizeName(componentData.name);
+                                    priceData[`name:${normalizedName}`] = componentData;
+                                    const simplifiedName = componentData.name
+                                        .replace(/\s+/g, ' ')
+                                        .replace(/[^\w\s]/g, '')
+                                        .toLowerCase()
+                                        .trim();
+                                    priceData[`simple:${simplifiedName}`] = componentData;
+                                    const capacityMatch = componentData.name.match(/(\d+\.?\d*)\s*(?:GB|TB|G|T)/i);
+                                    const modelMatch = componentData.name.match(/(\w+\d+\w*)/i);
+                                    if (capacityMatch && modelMatch) {
+                                        const capacityValue = capacityMatch[1].includes('TB') ? parseFloat(capacityMatch[1]) * 1000 : parseFloat(capacityMatch[1]);
+                                        const modelCapacityKey = `${modelMatch[1].toLowerCase()}-${capacityValue}`;
+                                        priceData[`model:${modelCapacityKey}`] = componentData;
+                                        console.log(`SSD stored: link=${link}, name=${normalizedName}, simple=${simplifiedName}, model=${modelCapacityKey}`);
+                                    } else {
+                                        console.log(`SSD stored: link=${link}, name=${normalizedName}, simple=${simplifiedName}`);
+                                    }
+                                }
+                            } else {
+                                console.warn(`Invalid row in ${file} (row ${index + 1}):`, columns);
+                            }
+                        } catch (error) {
+                            console.error(`Error processing row ${index + 1} in ${file}:`, row, error);
+                        }
+                    });
+                } catch (error) {
+                    console.error(`Error fetching ${file}:`, error);
+                }
+            }
+        
+            console.log('Price data keys:', Object.keys(priceData).length, 'entries');
+            if (Object.keys(priceData).some(key => key.includes('NV3'))) {
+                console.log('SSD data found for NV3 in priceData');
+            } else {
+                console.warn('No SSD data found for NV3 in priceData');
+            }
+            return priceData;
+        }
+        
+        // Update prices of selected components
+        async function updateComponentPrices() {
+            console.log('Running updateComponentPrices');
+            const priceData = await fetchComponentPrices();
+            console.log('Fetched priceData:', Object.keys(priceData || {}).length, 'entries');
+        
+            const componentKeys = ['selectedGPU', 'selectedCPU', 'selectedMotherboard', 'selectedSSD'];
+            let updated = false;
+            const now = Date.now();
+        
+            componentKeys.forEach(key => {
+                let component;
+                try {
+                    component = JSON.parse(localStorage.getItem(key) || 'null');
+                    console.log(`Processing ${key}:`, component);
+                } catch (error) {
+                    console.error(`Error parsing ${key} in updateComponentPrices:`, error);
+                    component = null;
+                }
+        
+                if (component) {
+                    // Validate component based on componentKey instead of type
+                    const isSSD = key === 'selectedSSD';
+                    const isValidType = ['selectedGPU', 'selectedCPU', 'selectedMotherboard'].includes(key) ?
+                        ['gpu', 'cpu', 'motherboard'].includes(component.type) : true;
+        
+                    if (!isValidType && !isSSD) {
+                        console.warn(`${key} has invalid type: ${component.type}`);
+                        return;
+                    }
+        
+                    if (!component.priceHistory || !Array.isArray(component.priceHistory)) {
+                        component.priceHistory = [{ price: component.price || 0, timestamp: now }];
+                        updated = true;
+                    }
+        
+                    const itemLink = normalizeUrl(component.link || component.url || '#', isSSD);
+                    console.log(`Checking priceData for ${key} link:`, itemLink);
+                    let newData = priceData[itemLink];
+        
+                    if (!newData && isSSD && component.name) {
+                        console.log(`SSD link not found, trying fallback matches for: ${component.name}`);
+                        const normalizedName = normalizeName(component.name);
+                        newData = priceData[`name:${normalizedName}`];
+                        if (!newData) {
+                            const simplifiedName = component.name
+                                .replace(/\s+/g, ' ')
+                                .replace(/[^\w\s]/g, '')
+                                .toLowerCase()
+                                .trim();
+                            newData = priceData[`simple:${simplifiedName}`];
+                            if (!newData) {
+                                const capacityMatch = component.name.match(/(\d+\.?\d*)\s*(?:GB|TB|G|T)/i);
+                                const modelMatch = component.name.match(/(\w+\d+\w*)/i);
+                                if (capacityMatch && modelMatch) {
+                                    const capacityValue = capacityMatch[1].includes('TB') ? parseFloat(capacityMatch[1]) * 1000 : parseFloat(capacityMatch[1]);
+                                    const modelCapacityKey = `${modelMatch[1].toLowerCase()}-${capacityValue}`;
+                                    newData = priceData[`model:${modelCapacityKey}`];
+                                }
+                                if (!newData && component.brand && component.capacity) {
+                                    Object.values(priceData).forEach(item => {
+                                        if (item.componentType === 'ssd' && 
+                                            item.brand.toLowerCase() === component.brand.toLowerCase() &&
+                                            item.capacity == component.capacity) {
+                                            newData = item;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        if (newData) {
+                            console.log(`Found SSD by fallback matching: ${newData.name}`);
+                        } else {
+                            console.warn(`No SSD data found by any matching method for: ${component.name}`);
+                            // Manual fallback for known SSD
+                            if (component.name.toLowerCase().includes('nv3') && component.name.includes('1TB')) {
+                                newData = {
+                                    componentType: 'ssd',
+                                    type: 'NVMe PCIe 4.0',
+                                    name: 'NV3 M.2 NVMe Gen 4 1TB SNV3S/ 1000G',
+                                    price: 66.49,
+                                    link: component.link || component.url || 'https://www.rdveikals.lv/products/lv/416/677463/sort/5/filter/0_0_0_0/NV3-M.2-NVMe-Gen-4-1TB-SNV3S-1000G-SSD-disks.html',
+                                    store: 'RDveikals',
+                                    image: component.image || 'https://www.rdveikals.lv/images/tumb/ed2cb9b68a61d792cb4fbe208d805f09.jpg',
+                                    brand: 'Kingston',
+                                    capacity: 1000,
+                                    readSpeed: 6000,
+                                    writeSpeed: 4000,
+                                    formFactor: 'M.2 2280',
+                                    interface: 'PCIe 4.0 x4'
+                                };
+                                console.log('Applied manual SSD fallback:', newData);
+                            }
+                        }
+                    }
+        
+                    if (newData) {
+                        const newPrice = newData.price;
+                        console.log(`Updating ${key}: old price ${component.price}, new price ${newPrice}`);
+        
+                        if (!component.priceHistory.some(entry => Math.abs(entry.price - newPrice) < 0.001)) {
+                            const latestPrice = component.priceHistory[component.priceHistory.length - 1]?.price;
+                            if (Math.abs(latestPrice - newPrice) > 0.001) {
+                                component.priceHistory.push({ price: newPrice, timestamp: now });
+                                component.priceHistory = component.priceHistory.filter(entry => now - entry.timestamp <= 30 * 24 * 60 * 60 * 1000);
+                                if (component.priceHistory.length > 60) {
+                                    component.priceHistory = component.priceHistory.slice(-60);
+                                }
+                                component.oldPrice = latestPrice;
+                                component.price = newPrice;
+                                component.priceChanged = true;
+                                component.percentageChange = latestPrice > 0 ? ((newPrice - latestPrice) / latestPrice * 100).toFixed(2) : 0;
+                                updated = true;
+                            } else {
+                                component.priceChanged = false;
+                                delete component.oldPrice;
+                                delete component.percentageChange;
+                            }
+                        }
+        
+                        const updatedFields = {
+                            price: newPrice,
+                            link: newData.link,
+                            unavailable: false,
+                            name: newData.name,
+                            store: newData.store,
+                            image: newData.image || component.image || component.imageUrl
+                        };
+        
+                        if (isSSD) {
+                            updatedFields.brand = newData.brand || component.brand;
+                            updatedFields.capacity = newData.capacity || component.capacity;
+                            updatedFields.type = newData.type || component.type;
+                            updatedFields.readSpeed = newData.readSpeed || component.readSpeed;
+                            updatedFields.writeSpeed = newData.writeSpeed || component.writeSpeed;
+                            updatedFields.formFactor = newData.formFactor || component.formFactor;
+                            updatedFields.interface = newData.interface || component.interface;
+                        } else if (component.type === 'cpu') {
+                            updatedFields.model = newData.model;
+                            updatedFields.cores = newData.cores;
+                            updatedFields.threads = newData.threads;
+                            updatedFields.baseClock = newData.baseClock;
+                            updatedFields.tdp = newData.tdp;
+                            updatedFields.socket = newData.socket;
+                            updatedFields.brand = newData.brand;
+                            updatedFields.generation = newData.generation;
+                            updatedFields.series = newData.series;
+                        } else if (component.type === 'motherboard') {
+                            updatedFields.platform = newData.platform;
+                            updatedFields.formfactor = newData.formfactor;
+                            updatedFields.chipset = newData.chipset;
+                            updatedFields.socket = newData.socket;
+                            updatedFields.memorytype = newData.memorytype;
+                            updatedFields.wifi = newData.wifi;
+                            updatedFields.bluetooth = newData.bluetooth;
+                            updatedFields.wifitype = newData.wifitype;
+                            updatedFields.m2slots = newData.m2slots;
+                            updatedFields.ramslots = newData.ramslots;
+                            updatedFields.m2interface = newData.m2interface;
+                        }
+        
+                        if (component.type === 'cpu' && component.url) {
+                            updatedFields.link = component.url;
+                            delete component.url;
+                            updated = true;
+                        }
+        
+                        localStorage.setItem(key, JSON.stringify({ ...component, ...updatedFields }));
+                    } else {
+                        const hasValidLink = (component.link && component.link !== '#') || (component.url && component.url !== '#');
+                        console.warn(`No price data for ${key} link: ${itemLink}, validLink: ${hasValidLink}`);
+                        if (!newData && isSSD && !hasValidLink) {
+                            // If no data found and link is invalid, keep existing data but mark unavailable
+                            localStorage.setItem(key, JSON.stringify({
+                                ...component,
+                                unavailable: true,
+                                priceChanged: false
+                            }));
+                        } else if (newData) {
+                            // If newData exists from manual fallback, apply it
+                            localStorage.setItem(key, JSON.stringify({
+                                ...component,
+                                ...newData,
+                                unavailable: false,
+                                priceChanged: false
+                            }));
+                        }
+                        updated = true;
+                    }
+                } else {
+                    console.warn(`${key} is null or invalid:`, component);
+                }
+            });
+        
+            if (updated) {
+                loadComponents();
+            }
+        
+            console.log('updateComponentPrices completed, updated:', updated);
+        }
+        
+        // Language and Theme Functions
+        function setLanguage(lang) {
+            const validLang = ['lv', 'en'].includes(lang) ? lang : 'lv';
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                if (!element.classList.contains('selected-component')) {
+                    const key = element.getAttribute('data-key');
+                    if (translations[validLang][key]) {
+                        element.textContent = translations[validLang][key];
+                    }
+                }
+            });
+        
+            const languageText = document.getElementById('language-text');
+            if (languageText) languageText.textContent = validLang.toUpperCase();
+        
+            document.documentElement.lang = validLang;
+            localStorage.setItem('language', validLang);
+        }
+        
+        function toggleLanguage() {
+            const currentLang = localStorage.getItem('language') || 'lv';
+            const newLang = currentLang === 'lv' ? 'en' : 'lv';
+            setLanguage(newLang);
+        }
+        
+        function setTheme(theme) {
+            const body = document.body;
+            const themeIcon = document.querySelector('#theme-toggle i');
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                body.classList.remove('light-mode');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            localStorage.setItem('theme', theme);
+        }
+        
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+        
+        // Display selected component
+        function displaySelectedComponent(componentType, rowId, nameId, imageId, storeId, priceId, removeBtnId) {
+            const componentKey = {
+                motherboard: 'selectedMotherboard',
+                cpu: 'selectedCPU',
+                gpu: 'selectedGPU',
+                ssd: 'selectedSSD'
+            }[componentType];
+        
+            if (!componentKey) {
+                console.error(`Unknown component type: ${componentType}`);
+                return;
+            }
+        
+            let component;
+            try {
+                component = JSON.parse(localStorage.getItem(componentKey) || 'null');
+                console.log(`Displaying ${componentKey}:`, component);
+            } catch (error) {
+                console.error(`Error parsing ${componentKey} from localStorage:`, error);
+                component = null;
+            }
+        
+            const lang = localStorage.getItem('language') || 'lv';
+            const row = document.getElementById(rowId);
+            const componentCell = row.querySelector('.component-cell');
+            const name = document.getElementById(nameId);
+            const store = document.getElementById(storeId);
+            const price = document.getElementById(priceId);
+            const removeBtn = document.getElementById(removeBtnId);
+            const categoryLink = componentCell.querySelector('.category-link');
+        
+            row.onclick = function(e) {
+                if (e.target.closest('.remove-btn') || 
+                    (component && e.target.closest('.category-text.selected-component')) || 
+                    e.target.closest('.price-text')) {
+                    return;
+                }
+                window.location.href = `${componentType === 'motherboard' ? 'motherboard' : componentType}.html`;
+            };
+        
+            name.textContent = translations[lang][componentType === 'motherboard' ? 'mb' : componentType];
+            name.classList.remove('selected-component');
+            store.textContent = '-';
+            price.innerHTML = '-';
+            price.classList.add('empty-price');
+            removeBtn.style.display = 'none';
+        
+            const existingImage = document.getElementById(imageId);
+            if (existingImage) existingImage.remove();
+        
+            const defaultUrl = `${componentType === 'motherboard' ? 'motherboard' : componentType}.html`;
+            categoryLink.href = defaultUrl;
+        
+            if (component) {
+                const image = document.createElement('img');
+                image.id = imageId;
+                image.className = 'component-image';
+                image.style.display = 'block';
+                const imageUrl = component.image || component.imageUrl || '';
+                image.src = imageUrl;
+                image.alt = component.name || componentType;
+                image.onerror = () => {
+                    console.error(`Failed to load image for ${componentType}: ${imageUrl}`);
+                    image.src = '';
+                };
+                componentCell.insertBefore(image, componentCell.firstChild);
+        
+                name.textContent = component.name;
+                name.classList.add('selected-component');
+        
+                const componentUrl = component.url || component.link || '#';
+                categoryLink.href = componentUrl;
+                categoryLink.title = `View ${component.name} at store`;
+                categoryLink.onclick = function(e) {
+                    if (name.classList.contains('selected-component')) {
+                        e.stopPropagation();
+                    }
+                };
+        
+                store.textContent = component.store || '-';
+        
+                let priceChangeHTML = '';
+                let priceClasses = component.priceChanged ? 'price-updated' : '';
+                if (component.unavailable) priceClasses += ' price-unavailable';
+        
+                if (component.priceChanged && component.oldPrice !== undefined && component.percentageChange !== undefined) {
+                    const isDecrease = component.price < component.oldPrice;
+                    const changeClass = isDecrease ? 'decrease' : 'increase';
+                    const arrowIcon = isDecrease ? 'fa-arrow-down' : 'fa-arrow-up';
+                    priceChangeHTML = `
+                        <div class="price-change ${changeClass}">
+                            <span>${Math.abs(component.percentageChange)}% <i class="fas ${arrowIcon}"></i></span>
+                        </div>
+                    `;
+                }
+        
+                let prevPrice = null;
+                const priceHistoryData = (component.priceHistory || [])
+                    .slice()
+                    .reverse()
+                    .map(entry => {
+                        let priceClass = '';
+                        let percentageChangeHTML = '';
+                        if (prevPrice !== null) {
+                            const isDecrease = entry.price < prevPrice;
+                            priceClass = isDecrease ? 'decrease' : entry.price > prevPrice ? 'increase' : '';
+                            const percentageChange = prevPrice > 0 ? ((entry.price - prevPrice) / prevPrice * 100).toFixed(2) : 0;
+                            percentageChangeHTML = `
+                                <span class="price-percentage ${priceClass}">
+                                    ${isDecrease ? '↓' : entry.price > prevPrice ? '↑' : ''} ${Math.abs(percentageChange)}%
+                                </span>
+                            `;
+                        }
+                        prevPrice = entry.price;
+                        return {
+                            price: entry.price.toFixed(2),
+                            priceClass,
+                            percentageChange: percentageChangeHTML,
+                            timestamp: formatTimestampToHour(entry.timestamp)
+                        };
+                    });
+        
+                price.innerHTML = `
+                    <span class="price-text" tabindex="0">
+                        ${component.unavailable ? translations[lang].unavailable : `${component.price.toFixed(2)} EUR`}
+                        ${component.priceChanged ? '<i class="fas fa-bell"></i>' : ''}
+                        ${component.unavailable ? '<i class="fas fa-exclamation-triangle"></i>' : ''}
+                        <i class="fas fa-info-circle tooltip-icon"></i>
+                    </span>
+                    ${priceChangeHTML}
+                `;
+        
+                price.classList.remove('empty-price');
+                price.classList.add(...priceClasses.split(' ').filter(Boolean));
+                removeBtn.style.display = 'flex';
+        
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    localStorage.removeItem(componentKey);
+                    displaySelectedComponent(componentType, rowId, nameId, imageId, storeId, priceId, removeBtnId);
+                    updateTotalPrice();
+                    updatePSURecommendation();
+                    checkCompatibility();
+                    updateFPS();
+                };
+        
+                const priceText = price.querySelector('.price-text');
+                const tooltip = document.getElementById('price-history-tooltip');
+        
+                priceText.onclick = (e) => {
+                    e.stopPropagation();
+                    if (tooltip.classList.contains('active') && tooltip.dataset.component === componentKey) {
+                        tooltip.classList.remove('active');
+                        tooltip.dataset.component = '';
+                        return;
+                    }
+        
+                    tooltip.classList.remove('active');
+                    tooltip.dataset.component = componentKey;
+        
+                    const historyHeader = priceHistoryData.length > 0 ?
+                        `<div class="tooltip-header">
+                            <span>${translations[lang].priceHistory} (${priceHistoryData.length})</span>
+                            <span class="tooltip-close">×</span>
+                        </div>` : '';
+                    const priceHistoryHTML = priceHistoryData.length > 0 ?
+                        `<div class="price-history-entries">
+                            ${priceHistoryData.map(entry => `
+                                <div class="price-history-entry">
+                                    <span class="entry-price ${entry.priceClass}">${entry.price} EUR</span>
+                                    ${entry.percentageChange}
+                                    <span class="entry-timestamp">${entry.timestamp}</span>
+                                </div>
+                            `).join('')}
+                        </div>` :
+                        `<div class="no-history">${translations[lang].noPriceHistory}</div>`;
+        
+                    tooltip.innerHTML = historyHeader + priceHistoryHTML;
+        
+                    const rect = priceText.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+                    const top = rect.bottom + scrollTop + 8;
+                    const left = rect.left + scrollLeft;
+        
+                    tooltip.style.top = `${top}px`;
+                    tooltip.style.left = `${left}px`;
+                    tooltip.classList.add('active');
+        
+                    const closeButton = tooltip.querySelector('.tooltip-close');
+                    if (closeButton) {
+                        closeButton.onclick = (e) => {
+                            e.stopPropagation();
+                            tooltip.classList.remove('active');
+                            tooltip.dataset.component = '';
+                        };
+                    }
+                };
+            }
+        
+            componentCell.style.transition = 'opacity 0.3s ease';
+            componentCell.style.opacity = '0';
+            setTimeout(() => {
+                componentCell.style.display = 'flex';
+                componentCell.style.opacity = '1';
+            }, 0);
+        
+            if (component && component.priceChanged) {
+                component.priceChanged = false;
+                localStorage.setItem(componentKey, JSON.stringify(component));
+            }
+        }
+        
+        // Update total price
+        function updateTotalPrice() {
+            const componentKeys = ['selectedMotherboard', 'selectedCPU', 'selectedGPU', 'selectedSSD', 'selectedRAM', 'selectedPSU', 'selectedCase'];
+            let total = 0;
+            componentKeys.forEach(key => {
+                let data;
+                try {
+                    data = JSON.parse(localStorage.getItem(key) || 'null');
+                } catch (error) {
+                    console.error(`Error parsing ${key} from localStorage:`, error);
+                    data = null;
+                }
+                if (data && 'price' in data && data.price != null) {
+                    const price = parseFloat(data.price);
+                    if (!isNaN(price)) {
+                        total += price;
+                    }
+                }
+            });
+            const totalPriceElement = document.getElementById('total-price');
+            if (totalPriceElement) {
+                totalPriceElement.textContent = `${total.toFixed(2)} EUR`;
+                totalPriceElement.classList.toggle('empty-price', total === 0);
+            }
+        }
+        
+        // Update PSU recommendation
+        function updatePSURecommendation() {
+            const cpuData = JSON.parse(localStorage.getItem('selectedCPU') || 'null');
+            const gpuData = JSON.parse(localStorage.getItem('selectedGPU') || 'null');
+            const ssdData = JSON.parse(localStorage.getItem('selectedSSD') || 'null');
+            const wattageElement = document.getElementById('recommended-wattage');
+        
+            if (cpuData && gpuData) {
+                let cpuWattage = cpuData.tdp ? parseFloat(cpuData.tdp) : 65;
+                const gpuWattage = gpuData.wattage ? parseFloat(gpuData.wattage) : 150;
+                const ssdWattage = ssdData ? 5 : 0;
+        
+                if (!isNaN(cpuWattage) && !isNaN(gpuWattage)) {
+                    const baseWattage = cpuWattage + gpuWattage + ssdWattage + 100;
+                    const recommended = Math.ceil((baseWattage * 1.37) / 50) * 50;
+                    wattageElement.textContent = `${recommended} W`;
+                    wattageElement.classList.remove('empty-price');
+                } else {
+                    wattageElement.textContent = '-';
+                    wattageElement.classList.add('empty-price');
+                }
+            } else {
+                wattageElement.textContent = '-';
+                wattageElement.classList.add('empty-price');
+            }
+        }
+        
+        // Check component compatibility
+        function checkCompatibility() {
+            const cpu = JSON.parse(localStorage.getItem('selectedCPU') || 'null');
+            const motherboard = JSON.parse(localStorage.getItem('selectedMotherboard') || 'null');
+            const existingWarning = document.getElementById('compatibility-warning');
+            const lang = localStorage.getItem('language') || 'lv';
+        
+            if (existingWarning) existingWarning.remove();
+        
+            let warnings = [];
+        
+            if (cpu && motherboard) {
+                const cpuSocket = normalizeSocket(cpu.socket);
+                const mbSocket = normalizeSocket(motherboard.socket);
+        
+                if (cpuSocket && mbSocket && cpuSocket !== mbSocket) {
+                    if (cpu.brand && cpu.brand.toLowerCase() === 'amd') {
+                        warnings.push(translations[lang].socketMismatchAMD
+                            .replace('{cpuSocket}', cpuSocket)
+                            .replace('{mbSocket}', mbSocket));
+                    } else {
+                        warnings.push(translations[lang].compatibilityWarning
+                            .replace('{cpuSocket}', cpuSocket)
+                            .replace('{mbSocket}', mbSocket));
+                    }
+                }
+            }
+        
+            if (warnings.length > 0) {
+                const warningElement = document.createElement('div');
+                warningElement.id = 'compatibility-warning';
+                warningElement.className = 'compatibility-warning';
+                warningElement.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${warnings.join('<br>')}</span>
+                    <button class="close-warning"><i class="fas fa-times"></i></button>
+                `;
+        
+                const totalSection = document.querySelector('.total-section');
+                if (totalSection && totalSection.parentNode) {
+                    totalSection.parentNode.insertBefore(warningElement, totalSection.nextSibling);
+        
+                    const closeButton = warningElement.querySelector('.close-warning');
+                    closeButton.addEventListener('click', () => warningElement.remove());
+                }
+                return false;
+            }
+        
+            return true;
+        }
+        
+        // Update FPS (simplified placeholder)
+        function updateFPS() {
+            const gpu = JSON.parse(localStorage.getItem('selectedGPU') || 'null');
+            const cpu = JSON.parse(localStorage.getItem('selectedCPU') || 'null');
+            document.querySelectorAll('.fps-overlay').forEach(overlay => {
+                overlay.classList.add('calculating');
+                setTimeout(() => {
+                    if (gpu && cpu) {
+                        const fps = 60; // Placeholder logic
+                        overlay.textContent = `${fps} FPS`;
+                        overlay.classList.add('has-fps');
+                    } else {
+                        overlay.textContent = '-';
+                        overlay.classList.remove('has-fps');
+                    }
+                    overlay.classList.remove('calculating');
+                }, 800);
+            });
+        }
+        
+        // Shooting star animation
+        function triggerShootingStar() {
+            const stars = document.querySelectorAll('.shooting-star');
+            const randomStar = stars[Math.floor(Math.random() * stars.length)];
+        
+            randomStar.style.animation = 'none';
+            randomStar.offsetHeight;
+            randomStar.style.animation = 'shoot 1.5s ease-in-out';
+        
+            const nextDelay = Math.random() * 15000 + 5000;
+            setTimeout(triggerShootingStar, nextDelay);
+        
+            if (Math.random() < 0.3) {
+                setTimeout(() => {
+                    const secondStar = stars[Math.floor(Math.random() * stars.length)];
+                    secondStar.style.animation = 'none';
+                    secondStar.offsetHeight;
+                    secondStar.style.animation = 'shoot 1.5s ease-in-out';
+                }, 750);
+            }
+        }
+        
+        // Scroll handler
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            let scrollTop = window.scrollY || document.documentElement.scrollTop;
+        
+            requestAnimationFrame(function() {
+                if (scrollTop > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        });
+        
+        // Toggle button handlers
+        function setupToggleButtons() {
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const setting = button.getAttribute('data-setting');
+                    const value = button.getAttribute('data-value');
+                    const siblings = button.parentElement.querySelectorAll('.toggle-btn');
+        
+                    siblings.forEach(sib => sib.classList.remove('active'));
+                    button.classList.add('active');
+                    button.classList.add('pressed');
+                    setTimeout(() => button.classList.remove('pressed'), 300);
+        
+                    if (setting === 'resolution') currentResolution = value;
+                    else if (setting === 'quality') currentQuality = value;
+        
+                    updateFPS();
+                });
+            });
+        }
+        
+        // Load all components
+        function loadComponents() {
+            const componentTypes = [
+                { type: 'motherboard', row: 'mb-row', name: 'mb-name', image: 'mb-image', store: 'mb-store', price: 'mb-price', remove: 'mb-remove-btn' },
+                { type: 'cpu', row: 'cpu-row', name: 'cpu-name', image: 'cpu-image', store: 'cpu-store', price: 'cpu-price', remove: 'cpu-remove-btn' },
+                { type: 'gpu', row: 'gpu-row', name: 'gpu-name', image: 'gpu-image', store: 'gpu-store', price: 'gpu-price', remove: 'gpu-remove-btn' },
+                { type: 'ssd', row: 'ssd-row', name: 'ssd-name', image: 'ssd-image', store: 'ssd-store', price: 'ssd-price', remove: 'ssd-remove-btn' }
+            ];
+        
+            componentTypes.forEach(({ type, row, name, image, store, price, remove }) => {
+                displaySelectedComponent(type, row, name, image, store, price, remove);
+            });
+        
+            updateTotalPrice();
+            updatePSURecommendation();
+            checkCompatibility();
+            updateFPS();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('language') || 'lv';
+            setLanguage(savedLang);
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            setTheme(savedTheme);
+            document.getElementById('language-toggle').addEventListener('click', toggleLanguage);
+            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        
+            loadComponents();
+            updateComponentPrices();
+            setInterval(updateComponentPrices, 5 * 60 * 1000); // Every 5 minutes
+        
+            document.addEventListener('click', (e) => {
+                const tooltip = document.getElementById('price-history-tooltip');
+                if (!e.target.closest('.price-text') && !e.target.closest('#price-history-tooltip')) {
+                    tooltip.classList.remove('active');
+                    tooltip.dataset.component = '';
+                }
+            });
+        
+            if (!localStorage.getItem('selectedCPU')) {
+                console.warn('No CPU selected. Please select a CPU to complete your build.');
+            }
+        
+            setupToggleButtons();
+        });
+        
+        window.addEventListener('load', triggerShootingStar);
+        
+        // CSS for smooth transitions and compatibility warning
+        const style = document.createElement('style');
+        style.textContent = `
+            .component-cell {
+                transition: opacity 0.3s ease;
+            }
+            .compatibility-warning {
+                display: flex;
+                align-items: center;
+                margin: 15px 0;
+                padding: 12px 15px;
+                border-radius: 8px;
+                background-color: rgba(255, 72, 72, 0.15);
+                border-left: 4px solid #ff4848;
+                animation: fadeIn 0.3s ease-in-out;
+                color: var(--text-color);
+            }
+            .compatibility-warning i.fa-exclamation-triangle {
+                color: #ff4848;
+                font-size: 1.2rem;
+                margin-right: 10px;
+            }
+            .compatibility-warning span {
+                flex: 1;
+                font-weight: 500;
+            }
+            .close-warning {
+                background: none;
+                border: none;
+                color: var(--text-color);
+                cursor: pointer;
+                opacity: 0.7;
+                transition: opacity 0.2s;
+            }
+            .close-warning:hover {
+                opacity: 1;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            #total-price {
+                font-style: normal !important;
+            }
+        `;
+        document.head.appendChild(style);
+        </script>
+        <script>
+
+
+
+
+
+
+
+
+
+
+
+
+        const components = [
+            { id: 'gpu', name: 'Videokarte', icon: 'fas fa-microchip' },
+            { id: 'cpu', name: 'Procesors', icon: 'fas fa-cog' },
+            { id: 'mb', name: 'Mātesplate', icon: 'fas fa-server' },
+            { id: 'ssd', name: 'SSD', icon: 'fas fa-hdd' },
+            { id: 'ram', name: 'RAM', icon: 'fas fa-memory' },
+            { id: 'psu', name: 'Barošanas Bloks', icon: 'fas fa-bolt' },
+            { id: 'case', name: 'Korpuss', icon: 'fas fa-desktop' }
+        ];
+
+
+        // Hardware database (expanded with more entries)
+        const hardwareDB = {
+            cpus: {
+        // Existing CPUs
+        "core-i3-10100": { name: "Intel Core i3-10100", perf: 50.0, power: 65 },
+        "core-i5-10600k": { name: "Intel Core i5-10600K", perf: 60.0, power: 125 },
+        "ryzen-5-5600x": { name: "AMD Ryzen 5 5600X", perf: 76.0, power: 65 },
+        "core-i7-12700k": { name: "Intel Core i7-12700K", perf: 140.0, power: 125 },
+        "ryzen-7-7800x3d": { name: "AMD Ryzen 7 7800X3D", perf: 150.0, power: 120 },
+        "core-i3-10100f": { name: "Intel Core i3-10100F", perf: 50.0, power: 65 },
+        "core-i5-10400": { name: "Intel Core i5-10400", perf: 55.0, power: 65 },
+        "core-i5-10400f": { name: "Intel Core i5-10400F", perf: 55.0, power: 65 },
+        "core-i7-10700": { name: "Intel Core i7-10700", perf: 62.0, power: 65 },
+        "core-i7-10700f": { name: "Intel Core i7-10700F", perf: 62.0, power: 65 },
+        "core-i9-10900": { name: "Intel Core i9-10900", perf: 65.0, power: 65 },
+        "core-i9-10900f": { name: "Intel Core i9-10900F", perf: 65.0, power: 65 },
+        "core-i3-12100": { name: "Intel Core i3-12100", perf: 75.0, power: 60 },
+        "core-i3-12100f": { name: "Intel Core i3-12100F", perf: 75.0, power: 60 },
+        "core-i5-12400": { name: "Intel Core i5-12400", perf: 78.0, power: 65 },
+        "core-i5-12400f": { name: "Intel Core i5-12400F", perf: 78.0, power: 65 },
+        "core-i5-12600k": { name: "Intel Core i5-12600K", perf: 82.0, power: 125 },
+        "core-i5-12600kf": { name: "Intel Core i5-12600KF", perf: 82.0, power: 125 },
+        "core-i7-12700": { name: "Intel Core i7-12700", perf: 85.0, power: 65 },
+        "core-i7-12700f": { name: "Intel Core i7-12700F", perf: 85.0, power: 65 },
+        "core-i7-12700k": { name: "Intel Core i7-12700K", perf: 87.0, power: 125 },
+        "core-i7-12700kf": { name: "Intel Core i7-12700KF", perf: 87.0, power: 125 },
+        "core-i9-12900": { name: "Intel Core i9-12900", perf: 90.0, power: 65 },
+        "core-i9-12900f": { name: "Intel Core i9-12900F", perf: 90.0, power: 65 },
+        "core-i9-12900k": { name: "Intel Core i9-12900K", perf: 90.0, power: 125 },
+        "core-i9-12900kf": { name: "Intel Core i9-12900KF", perf: 90.0, power: 125 },
+        "core-i3-13100": { name: "Intel Core i3-13100", perf: 85.0, power: 60 },
+        "core-i3-13100f": { name: "Intel Core i3-13100F", perf: 85.0, power: 60 },
+        "core-i5-13400": { name: "Intel Core i5-13400", perf: 88.0, power: 65 },
+        "core-i5-13400f": { name: "Intel Core i5-13400F", perf: 88.0, power: 65 },
+        "core-i5-13600k": { name: "Intel Core i5-13600K", perf: 92.0, power: 125 },
+        "core-i5-13600kf": { name: "Intel Core i5-13600KF", perf: 92.0, power: 125 },
+        "core-i7-13700": { name: "Intel Core i7-13700", perf: 94.0, power: 65 },
+        "core-i7-13700f": { name: "Intel Core i7-13700F", perf: 94.0, power: 65 },
+        "core-i7-13700k": { name: "Intel Core i7-13700K", perf: 97.0, power: 125 },
+        "core-i7-13700kf": { name: "Intel Core i7-13700KF", perf: 97.0, power: 125 },
+        "core-i9-13900": { name: "Intel Core i9-13900", perf: 100.0, power: 65 },
+        "core-i9-13900f": { name: "Intel Core i9-13900F", perf: 100.0, power: 65 },
+        "core-i9-13900k": { name: "Intel Core i9-13900K", perf: 100.0, power: 125 },
+        "core-i9-13900kf": { name: "Intel Core i9-13900KF", perf: 100.0, power: 125 },
+        "core-i3-14100": { name: "Intel Core i3-14100", perf: 86.0, power: 60 },
+        "core-i3-14100f": { name: "Intel Core i3-14100F", perf: 86.0, power: 60 },
+        "core-i5-14400": { name: "Intel Core i5-14400", perf: 88.0, power: 65 },
+        "core-i5-14400f": { name: "Intel Core i5-14400F", perf: 88.0, power: 65 },
+        "core-i5-14600k": { name: "Intel Core i5-14600K", perf: 95.0, power: 125 },
+        "core-i5-14600kf": { name: "Intel Core i5-14600KF", perf: 95.0, power: 125 },
+        "core-i7-14700": { name: "Intel Core i7-14700", perf: 97.0, power: 65 },
+        "core-i7-14700f": { name: "Intel Core i7-14700F", perf: 97.0, power: 65 },
+        "core-i7-14700k": { name: "Intel Core i7-14700K", perf: 100.0, power: 125 },
+        "core-i7-14700kf": { name: "Intel Core i7-14700KF", perf: 100.0, power: 125 },
+        "core-i9-14900": { name: "Intel Core i9-14900", perf: 102.0, power: 65 },
+        "core-i9-14900f": { name: "Intel Core i9-14900F", perf: 102.0, power: 65 },
+        "core-i9-14900k": { name: "Intel Core i9-14900K", perf: 105.0, power: 125 },
+        "core-i9-14900kf": { name: "Intel Core i9-14900KF", perf: 105.0, power: 125 },
+        "ryzen-3-3100": { name: "AMD Ryzen 3 3100", perf: 46.0, power: 65 },
+        "ryzen-3-3300x": { name: "AMD Ryzen 3 3300X", perf: 48.0, power: 65 },
+        "ryzen-5-3500": { name: "AMD Ryzen 5 3500", perf: 50.0, power: 65 },
+        "ryzen-5-3600": { name: "AMD Ryzen 5 3600", perf: 56.0, power: 65 },
+        "ryzen-5-3600x": { name: "AMD Ryzen 5 3600X", perf: 58.0, power: 95 },
+        "ryzen-7-3700x": { name: "AMD Ryzen 7 3700X", perf: 62.0, power: 65 },
+        "ryzen-7-3800x": { name: "AMD Ryzen 7 3800X", perf: 64.0, power: 105 },
+        "ryzen-9-3900x": { name: "AMD Ryzen 9 3900X", perf: 68.0, power: 105 },
+        "ryzen-9-3950x": { name: "AMD Ryzen 9 3950X", perf: 70.0, power: 105 },
+        "ryzen-5-4500": { name: "AMD Ryzen 5 4500", perf: 55.0, power: 65 },
+        "ryzen-5-5500": { name: "AMD Ryzen 5 5500", perf: 72.0, power: 65 },
+        "ryzen-5-5600": { name: "AMD Ryzen 5 5600", perf: 74.0, power: 65 },
+        "ryzen-5-5600x": { name: "AMD Ryzen 5 5600X", perf: 76.0, power: 65 },
+        "ryzen-7-5700x": { name: "AMD Ryzen 7 5700X", perf: 78.0, power: 65 },
+        "ryzen-7-5800x": { name: "AMD Ryzen 7 5800X", perf: 80.0, power: 105 },
+        "ryzen-9-5900x": { name: "AMD Ryzen 9 5900X", perf: 82.0, power: 105 },
+        "ryzen-9-5950x": { name: "AMD Ryzen 9 5950X", perf: 85.0, power: 105 },
+        "ryzen-5-7500f": { name: "AMD Ryzen 5 7500F", perf: 84.0, power: 65 },
+        "ryzen-5-7600": { name: "AMD Ryzen 5 7600", perf: 86.0, power: 65 },
+        "ryzen-5-7600x": { name: "AMD Ryzen 5 7600X", perf: 89.0, power: 105 },
+        "ryzen-7-7700": { name: "AMD Ryzen 7 7700", perf: 91.0, power: 65 },
+        "ryzen-7-7700x": { name: "AMD Ryzen 7 7700X", perf: 92.0, power: 105 },
+        "ryzen-9-7900": { name: "AMD Ryzen 9 7900", perf: 94.0, power: 65 },
+        "ryzen-9-7900x": { name: "AMD Ryzen 9 7900X", perf: 95.0, power: 170 },
+        "ryzen-9-7950x": { name: "AMD Ryzen 9 7950X", perf: 98.0, power: 170 },
+        "ryzen-3-8300g": { name: "AMD Ryzen 3 8300G", perf: 50.0, power: 65 },
+        "ryzen-3-8400f": { name: "AMD Ryzen 3 8400F", perf: 52.0, power: 65 },
+        "ryzen-5-8500g": { name: "AMD Ryzen 5 8500G", perf: 54.0, power: 65 },
+        "ryzen-5-8600g": { name: "AMD Ryzen 5 8600G", perf: 56.0, power: 65 },
+        "ryzen-7-8700g": { name: "AMD Ryzen 7 8700G", perf: 58.0, power: 65 },
+        "ryzen-7-8800f": { name: "AMD Ryzen 7 8800F", perf: 60.0, power: 65 },
+        "ryzen-5-9600x": { name: "AMD Ryzen 5 9600X", perf: 91.0, power: 105 },
+        "ryzen-7-9700x": { name: "AMD Ryzen 7 9700X", perf: 96.0, power: 105 },
+        "ryzen-9-9900x": { name: "AMD Ryzen 9 9900X", perf: 100.0, power: 170 },
+        "ryzen-9-9950x": { name: "AMD Ryzen 9 9950X", perf: 108.0, power: 170 }
+    },
+            gpus: {
+                "rtx-3090-ti": { name: "NVIDIA RTX 3090 Ti", perf: 120.0, power: 350 },
+                "rtx-3090": { name: "NVIDIA RTX 3090", perf: 114.0, power: 350 },
+                "rx-7900-xtx": { name: "AMD RX 7900 XTX", perf: 160.0, power: 355 },
+                "rx-7900-xt": { name: "AMD RX 7900 XT", perf: 140.0, power: 300 },
+                "rtx-4070-ti": { name: "NVIDIA RTX 4070 Ti", perf: 130.0, power: 285 },
+                "rx-7800-xt": { name: "AMD RX 7800 XT", perf: 91.9, power: 263 },
+                "rtx-4060": { name: "NVIDIA RTX 4060", perf: 70.0, power: 115 },
+                "rtx-4060-ti-8gb": { name: "NVIDIA RTX 4060 Ti 8GB", perf: 90.0, power: 160 },
+                "rtx-4070": { name: "NVIDIA RTX 4070", perf: 90.7, power: 200 },
+                "rx-7600-xt": { name: "AMD RX 7600 XT", perf: 77.0, power: 165 },
+                "rx-7700-xt": { name: "AMD RX 7700 XT", perf: 108.0, power: 245 },
+                "rtx-4060-ti-16gb": { name: "NVIDIA RTX 4060 Ti 16GB", perf: 95.0, power: 160 },
+                "rx-7600": { name: "AMD RX 7600", perf: 77.0, power: 165 },
+                "rtx-4070-super": { name: "NVIDIA RTX 4070 Super", perf: 100.0, power: 200 },
+                "rtx-4070-ti-super": { name: "NVIDIA RTX 4070 Ti Super", perf: 135.0, power: 285 },
+                "rtx-4080-super": { name: "NVIDIA RTX 4080 Super", perf: 155.0, power: 320 },
+                "rx-6900-xt": { name: "AMD RX 6900 XT", perf: 130.0, power: 300 },
+                "rx-6950-xt": { name: "AMD RX 6950 XT", perf: 136.0, power: 335 },
+                "titan-x-pascal": { name: "NVIDIA Titan X Pascal", perf: 84.0, power: 250 },
+                "rtx-4090": { name: "NVIDIA RTX 4090", perf: 180.0, power: 450 },
+                "rtx-3080-ti": { name: "NVIDIA RTX 3080 Ti", perf: 133.0, power: 350 },
+                "rx-5700-xt": { name: "AMD RX 5700 XT", perf: 68.0, power: 225 },
+                "rx-6600": { name: "AMD RX 6600", perf: 57.0, power: 132 },
+                "rtx-4080": { name: "NVIDIA RTX 4080", perf: 150.0, power: 320 },
+                "rtx-2080-super": { name: "NVIDIA RTX 2080 Super", perf: 80.0, power: 250 },
+                "rtx-2080-ti": { name: "NVIDIA RTX 2080 Ti", perf: 84.0, power: 250 },
+                "rtx-2080": { name: "NVIDIA RTX 2080", perf: 80.0, power: 215 },
+                "rtx-2070-super": { name: "NVIDIA RTX 2070 Super", perf: 78.0, power: 215 },
+                "rx-5700": { name: "AMD RX 5700", perf: 70.0, power: 180 },
+                "titan-rtx": { name: "NVIDIA Titan RTX", perf: 90.0, power: 280 },
+                "rx-6800-xt": { name: "AMD RX 6800 XT", perf: 86.9, power: 300 },
+                "rtx-2070": { name: "NVIDIA RTX 2070", perf: 70.0, power: 175 },
+                "gtx-1660-super": { name: "NVIDIA GTX 1660 Super", perf: 58.0, power: 125 },
+                "rtx-2060-super": { name: "NVIDIA RTX 2060 Super", perf: 66.0, power: 175 },
+                "rtx-2060-12gb": { name: "NVIDIA RTX 2060 12GB", perf: 64.0, power: 175 },
+                "rtx-3080-12gb": { name: "NVIDIA RTX 3080 12GB", perf: 102.0, power: 320 },
+                "rtx-3080": { name: "NVIDIA RTX 3080", perf: 103.2, power: 320 },
+                "rx-6800": { name: "AMD RX 6800", perf: 86.0, power: 250 },
+                "rx-5600-xt": { name: "AMD RX 5600 XT", perf: 60.0, power: 150 },
+                "rx-6750-xt": { name: "AMD RX 6750 XT", perf: 87.0, power: 230 },
+                "rx-6700-xt": { name: "AMD RX 6700 XT", perf: 62.7, power: 230 },
+                "rtx-3070-ti": { name: "NVIDIA RTX 3070 Ti", perf: 86.4, power: 290 },
+                "rtx-3070-lhr": { name: "NVIDIA RTX 3070 LHR", perf: 82.1, power: 220 },
+                "rtx-3070": { name: "NVIDIA RTX 3070", perf: 82.1, power: 220 },
+                "gtx-1660": { name: "NVIDIA GTX 1660", perf: 54.0, power: 120 },
+                "gtx-1080-ti": { name: "NVIDIA GTX 1080 Ti", perf: 69.0, power: 250 },
+                "rtx-3060-ti-gddr6x": { name: "NVIDIA RTX 3060 Ti GDDR6X", perf: 79.0, power: 200 },
+                "gtx-1660-ti": { name: "NVIDIA GTX 1660 Ti", perf: 60.0, power: 120 },
+                "gtx-1080": { name: "NVIDIA GTX 1080", perf: 64.0, power: 180 },
+                "rtx-3060-8gb": { name: "NVIDIA RTX 3060 8GB", perf: 54.6, power: 170 },
+                "gtx-1070-ti": { name: "NVIDIA GTX 1070 Ti", perf: 62.0, power: 180 },
+                "rx-6650-xt": { name: "AMD RX 6650 XT", perf: 68.0, power: 180 },
+                "rtx-3060-ti": { name: "NVIDIA RTX 3060 Ti", perf: 79.0, power: 200 },
+                "rx-6600-xt": { name: "AMD RX 6600 XT", perf: 65.0, power: 160 },
+                "gtx-1070": { name: "NVIDIA GTX 1070", perf: 60.0, power: 150 },
+                "rx-6700": { name: "AMD RX 6700", perf: 59.0, power: 175 },
+                "rtx-3060-lhr": { name: "NVIDIA RTX 3060 LHR", perf: 54.6, power: 170 },
+                "rx-5500-xt": { name: "AMD RX 5500 XT", perf: 50.0, power: 130 },
+                "gtx-980-ti": { name: "NVIDIA GTX 980 Ti", perf: 60.0, power: 250 },
+                "rtx-3050": { name: "NVIDIA RTX 3050", perf: 38.6, power: 130 },
+                "rx-vega-56": { name: "AMD RX Vega 56", perf: 50.0, power: 210 },
+                "rx-590": { name: "AMD RX 590", perf: 50.0, power: 175 },
+                "rtx-3050-6gb": { name: "NVIDIA RTX 3050 6GB", perf: 38.0, power: 130 },
+                "rx-480": { name: "AMD RX 480", perf: 40.0, power: 150 },
+                "rx-580-36cu": { name: "AMD RX 580 36CU", perf: 44.0, power: 185 },
+                "rx-560-16cu": { name: "AMD RX 560 16CU", perf: 30.0, power: 80 },
+                "gtx-1650-gddr5": { name: "NVIDIA GTX 1650 GDDR5", perf: 40.0, power: 75 },
+                "gtx-1650-gddr6": { name: "NVIDIA GTX 1650 GDDR6", perf: 42.0, power: 75 },
+                "rx-570": { name: "AMD RX 570", perf: 46.0, power: 150 },
+                "rx-580-32cu": { name: "AMD RX 580 32CU", perf: 44.0, power: 185 },
+                "gtx-980": { name: "NVIDIA GTX 980", perf: 50.0, power: 165 },
+                "rx-470": { name: "AMD RX 470", perf: 38.0, power: 110 },
+                "gtx-970": { name: "NVIDIA GTX 970", perf: 40.0, power: 145 },
+                "rx-6500-xt": { name: "AMD RX 6500 XT", perf: 24.0, power: 107 },
+                "gtx-1650-super": { name: "NVIDIA GTX 1650 Super", perf: 52.0, power: 100 },
+                "rx-6400": { name: "AMD RX 6400", perf: 35.0, power: 110 }
+            }
+        };
+
+
+
+        
+
+        const BENCHMARKS = {
+    // Cyberpunk 2077 (Phantom Liberty) at 1080p Ultra settings (from image)
+    "cyberpunk2077_1080p": {
+        "rtx-4090": 166.7,
+        "rtx-4080": 150.2,
+        "rx-7900-xtx": 137.5,
+        "rx-7900-xt": 123.7,
+        "rtx-3090-ti": 130.3,
+        "rtx-3090": 118.8,
+        "rtx-4070-ti": 126.3,
+        "rx-6950-xt": 105.5,
+        "rtx-3080-ti": 105.5,
+        "rx-7800-xt": 105.2,
+        "rx-6900-xt": 91.6,
+        "rx-6800-xt": 96.7,
+        "rtx-3080": 87.2,
+        "rtx-4070": 92.2,
+        "rx-7700-xt": 91.6,
+        "rx-6800": 83.0,
+        "rtx-3070-ti": 87.2,
+        "rtx-3070": 83.0,
+        "rtx-4060-ti-8gb": 80.1,
+        "rtx-4060-ti-16gb": 79.3,
+        "rx-6750-xt": 68.1,
+        "rtx-2080-ti": 80.7,
+        "rx-6700-xt": 68.1,
+        "rtx-3060-ti": 71.5,
+        "rx-7600": 63.3,
+        "rtx-4060": 61.9,
+        "rx-6600-xt": 54.6,
+        "rtx-3060": 54.6,
+        "rx-6600": 63.3,
+        "rtx-3050": 39.9,
+        "rx-6500-xt": 44.0,
+        "arc-a770": 65.5,
+        "arc-a750": 63.3,
+        "gtx-1660-super": 34.5,
+        "gtx-1660": 32.5,
+        "gtx-1650-super": 30.2,
+        "gtx-1650": 26.5,
+        "arc-a380": 23.5,
+        "rx-6400": 22.0,
+        "rtx-4080-super": 155.0, // Estimated based on 4080
+        "rx-7900-gre": 115.0, // Estimated between RX 7900 XT and RX 7800 XT
+        "arc-b580": 70.0, // Estimated between A770 and A750
+        "arc-b570": 65.0, // Estimated slightly below B580
+        "rx-9070-xt": 110.0, // Estimated future performance
+        "rx-9070": 100.0, // Estimated future performance
+        "rtx-5090": 180.0, // Estimated future performance
+        "rtx-5080": 170.0, // Estimated future performance
+        "rtx-4070-super": 119.4, // From Python Kingdom Come data (proxy)
+        "rtx-4070-ti-super": 134.5, // From Python Kingdom Come data (proxy)
+        "rtx-3060-8gb": 54.6, // Assumed same as RTX 3060
+        "gtx-1080-ti": 65.5, // From Python Kingdom Come data (proxy)
+        "arc-a310": 18.5 // From Python Kingdom Come data (proxy)
+    },
+    // Cyberpunk 2077 (Phantom Liberty) at 1440p Ultra settings (from image)
+    "cyberpunk2077_1440p": {
+        "rtx-4090": 129.4,
+        "rtx-4080": 103.3,
+        "rx-7900-xtx": 98.0,
+        "rx-7900-xt": 89.1,
+        "rtx-3090-ti": 79.7,
+        "rtx-3090": 77.9,
+        "rtx-4070-ti": 88.8,
+        "rx-6950-xt": 62.2,
+        "rtx-3080-ti": 57.6,
+        "rx-7800-xt": 73.5,
+        "rx-6900-xt": 52.5,
+        "rx-6800-xt": 62.2,
+        "rtx-3080": 54.5,
+        "rtx-4070": 66.4,
+        "rx-7700-xt": 62.2,
+        "rx-6800": 45.4,
+        "rtx-3070-ti": 57.6,
+        "rtx-3070": 54.5,
+        "rtx-4060-ti-8gb": 51.9,
+        "rtx-4060-ti-16gb": 50.3,
+        "rx-6750-xt": 45.4,
+        "rtx-2080-ti": 52.5,
+        "rx-6700-xt": 45.4,
+        "rtx-3060-ti": 46.5,
+        "rx-7600": 41.5,
+        "rtx-4060": 38.6,
+        "rx-6600-xt": 35.0,
+        "rtx-3060": 35.0,
+        "rx-6600": 41.5,
+        "rtx-3050": 25.4,
+        "rx-6500-xt": 29.5,
+        "arc-a770": 44.7,
+        "arc-a750": 41.5,
+        "gtx-1660-super": 23.3,
+        "gtx-1660": 22.0,
+        "gtx-1650-super": 20.5,
+        "gtx-1650": 18.0,
+        "arc-a380": 16.0,
+        "rx-6400": 14.9,
+        "rtx-4080-super": 110.0, // Estimated based on 4080
+        "rx-7900-gre": 85.0, // Estimated between RX 7900 XT and RX 7800 XT
+        "arc-b580": 50.0, // Estimated between A770 and A750
+        "arc-b570": 45.0, // Estimated slightly below B580
+        "rx-9070-xt": 75.0, // Estimated future performance
+        "rx-9070": 65.0, // Estimated future performance
+        "rtx-5090": 140.0, // Estimated future performance
+        "rtx-5080": 130.0, // Estimated future performance
+        "rtx-4070-super": 83.7, // From Python Kingdom Come data (proxy)
+        "rtx-4070-ti-super": 96.0, // From Python Kingdom Come data (proxy)
+        "rtx-3060-8gb": 35.0, // Assumed same as RTX 3060
+        "gtx-1080-ti": 47.1, // From Python Kingdom Come data (proxy)
+        "arc-a310": 12.5 // From Python Kingdom Come data (proxy)
+    },
+    // Kingdom Come: Deliverance 2 at 1080p High settings (real life benchmarks)
+"kcd2_1080p": {
+    "rx-6400": 22.0, // Unchanged, not listed in new data
+    "rx-6500-xt": 29.0, // Unchanged, not listed in new data
+    "rx-6600": 56, // Updated to 56 (matches new data for Radeon RX 6600)
+    "rx-6600-xt": 53.7, // Unchanged, not listed in new data
+    "rx-6650-xt": 67, // Updated from 56.2 to 67
+    "rx-6700": 74.0, // Unchanged, not listed in new data (previously approximated as RX 6800)
+    "rx-6700-xt": 74, // Updated from 62.7 to 74
+    "rx-6750-xt": 78, // Updated from 67.2 to 78
+    "rx-6800": 90, // Updated from 74.0 to 90
+    "rx-6800-xt": 106, // Updated from 86.9 to 106
+    "rx-6900-xt": 112, // Updated from 94.5 to 112
+    "rx-7600": 72, // Updated from 72.0 to 72 (same value, confirmed)
+    "rx-7600-xt": 72, // Updated from 61.4 to 72
+    "rx-7700-xt": 111, // Updated from 81.2 to 111
+    "rx-7800-xt": 117, // Updated from 91.9 to 117
+    "rx-7900-xt": 144, // Updated from 114.6 to 144
+    "rx-7900-xtx": 176, // Updated from 127.4 to 176
+    "rx-7900-gre": 123, // Updated from 100.8 to 123
+    "rx-9070": 100.5, // Unchanged, not listed in new data
+    "rx-9070-xt": 110.2, // Unchanged, not listed in new data
+    "gtx-1650": 26.5, // Unchanged, not listed in new data
+    "gtx-1650-super": 30.2, // Unchanged, not listed in new data
+    "gtx-1660": 32.5, // Unchanged, not listed in new data
+    "gtx-1660-super": 34.5, // Unchanged, not listed in new data
+    "gtx-1660-ti": 36.0, // Unchanged, not listed in new data
+    "rtx-3050": 38.6, // Unchanged, not listed in new data
+    "rtx-3060": 71, // Updated from 54.6 to 71
+    "rtx-3060-ti": 71.7, // Unchanged, not listed in new data
+    "rtx-3070": 108, // Updated from 82.1 to 108
+    "rtx-3070-ti": 120, // Unchanged, not listed in new data
+    "rtx-3080": 138, // Updated from 103.2 to 138
+    "rtx-3080-ti": 145, // Unchanged, not listed in new data
+    "rtx-3090": 155, // Updated from 114.0 to 155
+    "rtx-3090-ti": 122.1, // Unchanged, not listed in new data
+    "rtx-4060": 79, // Updated from 63.5 to 79
+    "rtx-4060-ti": 105, // Updated from 80.9 to 105 (average of 8GB and 16GB versions)
+    "rtx-4070": 136, // Updated from 102.7 to 136
+    "rtx-4070-ti": 183, // Updated from 128.3 to 183
+    "rtx-4080": 211, // Updated from 151.4 to 211
+    "rtx-4080-super": 211, // Updated from 150.8 to 211
+    "rtx-4090": 265, // Updated from 184.6 to 265
+    "rtx-5060": 160, // Unchanged, not listed in new data
+    "rtx-5060-ti": 180, // Unchanged, not listed in new data
+    "rtx-5070": 210, // Unchanged, not listed in new data
+    "rtx-5070-ti": 220, // Unchanged, not listed in new data
+    "rtx-5080": 243, // Updated from 171.5 to 243
+    "rtx-5090": 341, // Updated from 200.5 to 341
+    "arc-a310": 18.5, // Unchanged, not listed in new data
+    "arc-a380": 23.5, // Unchanged, not listed in new data
+    "arc-a580": 86, // Updated from 45.2 to 86
+    "arc-a750": 57.0, // Unchanged, not listed in new data
+    "arc-a770": 86, // Updated from 62.9 to 86
+    "arc-b570": 77, // Updated from 60.5 to 77 (Intel Arc A570 in new data)
+    "arc-b580": 70.0 // Unchanged, not listed in new data
+},
+// Kingdom Come: Deliverance 2 at 1440p High settings (Real life benchmarks)
+  "kcd2_1440p": {
+    "rtx-5090": 259, // Updated from 165.2 to 259
+    "rtx-4090": 198, // Updated from 141.4 to 198
+    "rtx-5080": 175, // Updated from 126.6 to 175
+    "rtx-4080-super": 151, // Updated from 111.7 to 151
+    "rtx-4080": 151, // Updated from 110.5 to 151
+    "rx-7900-xtx": 125, // Updated from 96.5 to 125
+    "rtx-4070-ti-super": 126, // Updated from 96.0 to 126
+    "rtx-4070-ti": 119, // Updated from 91.5 to 119
+    "rtx-3090-ti": 90.7, // Unchanged, not listed in new data
+    "rtx-4070-super": 109, // Updated from 83.7 to 109
+    "rx-7900-xt": 106, // Updated from 83.4 to 106
+    "rtx-3090": 111, // Updated from 82.8 to 111
+    "rx-7900-gre": 91, // Updated from 74.4 to 91
+    "rtx-3080": 96, // Updated from 73.8 to 96
+    "rtx-4070": 90, // Updated from 71.6 to 90
+    "rx-6900-xt": 83, // Updated from 68.7 to 83
+    "rx-7800-xt": 87, // Updated from 67.9 to 87
+    "rx-6800-xt": 78, // Updated from 63.1 to 78
+    "rtx-3070-ti": 60.6, // Unchanged, not listed in new data
+    "rx-7700-xt": 83, // Updated from 57.9 to 83
+    "rtx-3070": 74, // Updated from 57.0 to 74
+    "rtx-2080-ti": 56.1, // Unchanged, not listed in new data
+    "rx-6800": 68, // Updated from 54.5 to 68
+    "rtx-4060-ti-8gb": 69, // Updated from 54.0 to 69
+    "rtx-4060-ti-16gb": 69, // Updated from 53.9 to 69
+    "arc-b580": 50.3, // Unchanged, not listed in new data
+    "rtx-3060-ti": 67, // Updated from 49.1 to 67
+    "arc-a770": 62, // Updated from 45.8 to 62
+    "rx-6700-xt": 54, // Updated from 44.6 to 54
+    "rtx-4060": 53, // Updated from 41.9 to 53
+    "rx-7600-xt": 49, // Updated from 40.4 to 49
+    "rx-7600": 49, // Updated from 38.4 to 49
+    "rtx-3060": 49, // Updated from 36.9 to 49
+    "rx-6600-xt": 43, // Unchanged, not listed in new data
+    "rtx-3050": 30, // Unchanged, not listed in new data
+    "rx-6750-xt": 58, // Updated from 48.2 to 58
+    "arc-b570": 56, // Updated from 43.3 to 56 (Intel Arc A570 in new data)
+    "arc-a750": 40.9, // Unchanged, not listed in new data
+    "arc-a580": 64, // Updated from 32.5 to 64
+    "gtx-1080-ti": 47.1, // Unchanged, not listed in new data
+    "rx-6650-xt": 46, // Updated from 38.2 to 46
+    "gtx-1660-super": 23.3, // Unchanged, not listed in new data
+    "gtx-1660-ti": 24.3, // Unchanged, not listed in new data
+    "gtx-1660": 22.0, // Unchanged, not listed in new data
+    "rx-6500-xt": 19.6, // Unchanged, not listed in new data
+    "gtx-1650-super": 20.5, // Unchanged, not listed in new data
+    "gtx-1650": 18.0, // Unchanged, not listed in new data
+    "arc-a380": 16.0, // Unchanged, not listed in new data
+    "rx-6400": 14.9, // Unchanged, not listed in new data
+    "arc-a310": 12.5, // Unchanged, not listed in new data
+    "rx-9070-xt": 127, // Unchanged, not listed in new data
+    "rx-9070": 110, // Unchanged, not listed in new data
+    "rx-6600": 37 // Added from new data (Radeon RX 6600)
+},
+    // GTA V at 1080p High settings (from Python data)
+    "gta5_1080p": {
+        "rtx-3090-ti": 226,
+        "rtx-3090": 209,
+        "rx-7900-xtx": 190,
+        "rx-7900-xt": 190,
+        "rtx-4070-ti": 190,
+        "rx-7800-xt": 190,
+        "rtx-4060": 190,
+        "rtx-4060-ti-8gb": 190,
+        "rtx-4070": 190,
+        "rx-7600-xt": 190,
+        "rx-7700-xt": 190,
+        "rtx-4060-ti-16gb": 190,
+        "rx-7600": 190,
+        "rtx-4070-super": 190,
+        "rtx-4070-ti-super": 190,
+        "rtx-4080-super": 190,
+        "rx-6900-xt": 189,
+        "rx-6950-xt": 189,
+        "titan-x-pascal": 188,
+        "rtx-4090": 186,
+        "rtx-3080-ti": 186,
+        "rx-5700-xt": 186,
+        "rx-6600": 182,
+        "rtx-4080": 182,
+        "rtx-2080-super": 180,
+        "rtx-2080-ti": 180,
+        "rtx-2080": 180,
+        "rtx-2070-super": 180,
+        "rx-5700": 180,
+        "titan-rtx": 180,
+        "rtx-6800-xt": 178,
+        "rtx-2070": 178,
+        "gtx-1660-super": 178,
+        "rtx-2060-super": 174,
+        "rtx-2060-12gb": 174,
+        "rtx-3080-12gb": 172,
+        "rtx-3080": 172,
+        "rtx-3080-lhr": 172,
+        "rx-6800": 170,
+        "rx-5600-xt": 170,
+        "rx-6750-xt": 166,
+        "rx-6700-xt": 166,
+        "rtx-3070-ti": 164,
+        "rtx-3070-lhr": 159,
+        "rtx-3070": 159,
+        "gtx-1660": 156,
+        "gtx-1080-ti": 156,
+        "rtx-3060-ti-gddr6x": 155,
+        "gtx-1660-ti": 154,
+        "gtx-1080": 154,
+        "rtx-3060-8gb": 154,
+        "gtx-1070-ti": 152,
+        "rx-6650-xt": 150,
+        "rtx-3060-ti": 149,
+        "rtx-3060-ti-lhr": 149,
+        "rx-6600-xt": 149,
+        "gtx-1070": 148,
+        "rx-6700": 139,
+        "rtx-3060-lhr": 133,
+        "rtx-3060": 133,
+        "rx-5500-xt": 124,
+        "gtx-980-ti": 120,
+        "rtx-3050": 113,
+        "rx-vega-56": 110,
+        "rx-590": 110,
+        "rtx-3050-6gb": 110,
+        "rx-480": 106,
+        "rx-580-36cu": 104,
+        "rx-560-16cu": 102,
+        "gtx-1650-gddr5": 100,
+        "gtx-1650-gddr6": 100,
+        "rx-570": 100,
+        "rx-580-32cu": 100,
+        "gtx-980": 100,
+        "rx-470": 98,
+        "gtx-970": 98,
+        "rx-6500-xt": 43,
+        "gtx-1650-super": 142,
+        "rx-6400": 35
+    },
+    // GTA V at 1440p High settings (from Python data)
+    "gta5_1440p": {
+        "rtx-3090-ti": 187,
+        "rtx-4090": 185,
+        "rtx-3090": 182,
+        "rtx-4080": 181,
+        "rtx-4080-super": 180,
+        "rx-7900-xtx": 175,
+        "rtx-4070-ti-super": 174,
+        "rx-7900-xt": 170,
+        "rtx-4070-ti": 170,
+        "rtx-4070-super": 158,
+        "rx-6950-xt": 152,
+        "rx-6900-xt": 152,
+        "rtx-3080-ti": 150,
+        "rtx-2080-ti": 146,
+        "rtx-4070": 144,
+        "rtx-3080-12gb": 142,
+        "rtx-3080": 141,
+        "rtx-3080-lhr": 141,
+        "rx-7800-xt": 140,
+        "rx-6800-xt": 138,
+        "titan-rtx": 130,
+        "rx-6800": 126,
+        "rtx-2080-super": 118,
+        "rtx-3070-ti": 114,
+        "rx-7700-xt": 112,
+        "rtx-2080": 108,
+        "rx-vega-64": 107,
+        "rtx-3070-lhr": 105,
+        "rtx-3070": 105,
+        "rx-6750-xt": 105,
+        "rx-6700-xt": 104,
+        "titan-x-pascal": 104,
+        "rtx-4060-ti-8gb": 102,
+        "rtx-4060-ti-16gb": 102,
+        "rtx-3060-ti-gddr6x": 102,
+        "gtx-1080-ti": 100,
+        "rtx-3060-ti": 99,
+        "rtx-3060-ti-lhr": 99,
+        "rtx-2070-super": 96,
+        "rtx-2070": 90,
+        "rtx-4060": 90,
+        "rx-6700": 88,
+        "rtx-2060-super": 86,
+        "rtx-2060-12gb": 86,
+        "rx-6650-xt": 85,
+        "rtx-3060": 82,
+        "rtx-3060-lhr": 82,
+        "rtx-3060-8gb": 82,
+        "rx-7600": 82,
+        "rx-6600-xt": 82,
+        "rx-5700-xt": 80,
+        "rx-7600-xt": 80,
+        "gtx-1660-super": 76,
+        "rx-5700": 74,
+        "gtx-1080": 74,
+        "gtx-980-ti": 74,
+        "rtx-3050": 73,
+        "gtx-1070-ti": 72,
+        "rx-590": 67,
+        "rtx-2060": 66,
+        "rx-6600": 66,
+        "rx-580-36cu": 64,
+        "radeon-vii": 62,
+        "gtx-1660-ti": 62,
+        "rx-5600-xt": 61,
+        "rx-5500-xt": 59,
+        "rx-570": 57,
+        "rx-580-32cu": 55,
+        "gtx-1660": 52,
+        "r9-fury": 52,
+        "gtx-1650-super": 46,
+        "gtx-970": 44,
+        "rx-6500-xt": 43,
+        "rtx-3050-6gb": 40,
+        "rx-480": 36,
+        "rx-470": 34,
+        "rx-6400": 28
+    },
+    // Fortnite at 1080p High settings (from Python data)
+    "fortnite_1080p": {
+        "rx-7900-xtx": 184.5,
+        "rx-7900-xt": 174.0,
+        "rtx-4090": 173.8,
+        "rtx-4080-super": 164.4,
+        "rtx-4070-ti-super": 161.5,
+        "rx-7900-gre": 149.2,
+        "rtx-4070-super": 147.9,
+        "rx-7800-xt": 145.7,
+        "rx-6800-xt": 140.2,
+        "rtx-4070": 137.8,
+        "rx-7700-xt": 130.2,
+        "rtx-3080": 125.5,
+        "rx-6700-xt": 112.0,
+        "rtx-4060-ti-8gb": 109.3,
+        "rtx-4060-ti-16gb": 109.3,
+        "rx-7600-xt": 99.6,
+        "rx-7600": 99.4,
+        "rtx-3060-ti": 98.9,
+        "rtx-4060": 94.9,
+        "rx-6650-xt": 92.3,
+        "rtx-3060": 78.8,
+        "rx-6600": 78.0,
+        "rtx-3050": 62.2,
+        "arc-a770": 57.1,
+        "arc-a750": 53.7,
+        "gtx-1660-super": 49.2,
+        "rx-6500-xt": 42.0,
+        "gtx-1650-super": 36.7,
+        "arc-a380": 25.0,
+        "rtx-5090": 195.0,
+        "rtx-5080": 180.0,
+        "rtx-3090-ti": 150.0,
+        "rtx-3090": 140.0,
+        "rtx-2080-ti": 115.0,
+        "arc-b580": 85.0,
+        "rx-6800": 130.0,
+        "rx-6750-xt": 120.0,
+        "arc-b570": 75.0,
+        "gtx-1660-ti": 52.0,
+        "gtx-1660": 45.0,
+        "gtx-1650": 32.0,
+        "rx-6400": 35.0,
+        "arc-a310": 20.0,
+        "rx-9070-xt": 160.0,
+        "rx-9070": 145.0
+    },
+    // Fortnite at 1440p High settings (from Python data)
+    "fortnite_1440p": {
+        "rx-7900-xtx": 167.3,
+        "rtx-4090": 165.2,
+        "rx-7900-xt": 153.3,
+        "rtx-4080-super": 151.4,
+        "rtx-4070-ti-super": 145.5,
+        "rx-7900-gre": 133.1,
+        "rtx-4070-super": 129.1,
+        "rx-7800-xt": 127.8,
+        "rx-6800-xt": 119.9,
+        "rtx-4070": 116.1,
+        "rx-7700-xt": 110.8,
+        "rtx-3080": 109.0,
+        "rx-6700-xt": 95.5,
+        "rtx-4060-ti-8gb": 92.7,
+        "rtx-4060-ti-16gb": 92.7,
+        "rtx-3060-ti": 84.0,
+        "rx-7600-xt": 81.4,
+        "rx-7600": 80.9,
+        "rtx-4060": 77.8,
+        "rx-6650-xt": 75.2,
+        "rtx-3060": 66.7,
+        "rx-6600": 64.3,
+        "arc-a770": 51.5,
+        "rtx-3050": 51.0,
+        "arc-a750": 47.8,
+        "gtx-1660-super": 40.0,
+        "rx-6500-xt": 35.0,
+        "gtx-1650-super": 30.0,
+        "arc-a380": 20.0,
+        "rtx-5090": 180.0,
+        "rtx-5080": 165.0,
+        "rtx-3090-ti": 135.0,
+        "rtx-3090": 125.0,
+        "rtx-2080-ti": 100.0,
+        "arc-b580": 75.0,
+        "rx-6800": 115.0,
+        "rx-6750-xt": 100.0,
+        "arc-b570": 65.0,
+        "gtx-1660-ti": 42.0,
+        "gtx-1660": 36.0,
+        "gtx-1650": 25.0,
+        "rx-6400": 28.0,
+        "arc-a310": 15.0,
+        "rx-9070-xt": 140.0,
+        "rx-9070": 125.0
+    },
+    "blackops6_1080p": {
+            // Ultra High-End Cards
+            "rtx-4090": 236, "rx-7900-xtx": 213, "rx-7900-xt": 192, "rtx-4080-super": 191,
+            "rtx-4080": 185, "rx-7900-gre": 176, "rtx-4070-ti-super": 168, "rx-6900-xt": 164,
+            // High-End Cards
+            "rtx-4070-ti": 161, "rx-7800-xt": 159, "rx-6800-xt": 151, "rtx-4070-super": 149,
+            "rtx-3090-ti": 142, "rx-7700-xt": 137, "rtx-3090": 133, "rtx-4070": 130,
+            "rx-6800": 129, "rtx-3080": 120, "rx-6700-xt": 107,
+            // Mid-Range Cards
+            "rtx-4060-ti-16gb": 101, "rtx-4060-ti-8gb": 101, "rtx-3070-ti": 100, "rx-7600-xt": 97,
+            "rtx-3070": 94, "rx-7600": 92, "rtx-3060-ti": 83, "rx-6600-xt": 80, "rtx-4060": 77,
+            "rtx-2080-ti": 74, "rx-5700-xt": 73, "rx-6600": 65, "rtx-3060": 62, "arc-a770": 59,
+            "arc-a750": 55, "rtx-3050": 44,
+            // Estimated values
+            "rtx-3080-ti": 125, "rx-6950-xt": 158, "rx-6750-xt": 115, "arc-b580": 88,
+            "arc-b570": 75, "arc-a580": 52, "gtx-1080-ti": 72, "rx-6650-xt": 78,
+            "gtx-1660-super": 48, "gtx-1660-ti": 50, "gtx-1660": 45, "rx-6500-xt": 39,
+            "gtx-1650-super": 40, "gtx-1650": 35, "arc-a380": 32, "rx-6400": 30,
+            "arc-a310": 25, "rx-9070-xt": 175, "rx-9070": 160, "rtx-5090": 280,
+            "rtx-5080": 235, "rtx-5070-ti": 210, "rtx-5070": 185, "rtx-5060-ti": 140,
+            "rtx-5060": 110
+        },
+        // Black Ops 6 at 1440p Extreme settings (from Python)
+        "blackops6_1440p": {
+            // Ultra High-End Cards
+            "rtx-4090": 175, "rx-7900-xtx": 155, "rx-7900-xt": 134, "rtx-4080-super": 133,
+            "rtx-4080": 131, "rx-7900-gre": 123, "rtx-4070-ti-super": 115, "rx-6900-xt": 113,
+            "rx-7800-xt": 110, "rtx-4070-ti": 108, "rx-6800-xt": 103, "rtx-3090-ti": 101,
+            "rtx-4070-super": 100, "rx-7700-xt": 95, "rtx-3090": 92, "rx-6800": 90,
+            // Estimated values
+            "rtx-4070": 91, "rtx-3080-ti": 97, "rtx-3080": 86, "rx-6950-xt": 116,
+            "rtx-4060-ti-16gb": 75, "rtx-4060-ti-8gb": 75, "rtx-3070-ti": 73, "rx-7600-xt": 72,
+            "rtx-3070": 68, "rx-7600": 66, "rtx-3060-ti": 60, "rx-6700-xt": 77,
+            "rx-6600-xt": 58, "rtx-4060": 56, "rtx-2080-ti": 54, "rx-5700-xt": 53,
+            "rx-6600": 47, "rtx-3060": 45, "arc-a770": 43, "arc-a750": 40, "rtx-3050": 32,
+            "rx-6750-xt": 83, "arc-b580": 64, "arc-b570": 55, "arc-a580": 38,
+            "gtx-1080-ti": 52, "rx-6650-xt": 57, "gtx-1660-super": 35, "gtx-1660-ti": 36,
+            "gtx-1660": 33, "rx-6500-xt": 28, "gtx-1650-super": 29, "gtx-1650": 25,
+            "arc-a380": 23, "rx-6400": 22, "arc-a310": 18, "rx-9070-xt": 128,
+            "rx-9070": 117, "rtx-5090": 208, "rtx-5080": 175, "rtx-5070-ti": 155,
+            "rtx-5070": 137, "rtx-5060-ti": 103, "rtx-5060": 81
+        },
+    // CS2 (unchanged from your original data)
+          "cs2_1080p": {
+    "rtx-4090": 541.3, "rtx-4080": 504.2, "rtx-3090-ti": 446.5, "rtx-3090": 415.7,
+    "rx-7900-xtx": 389.0, "rx-7900-xt": 380.8, "rx-6900-xt": 372.4, "rtx-4080-super": 362.4,
+    "rtx-4070-ti": 325.7, "rtx-3080-ti": 327.6, "rtx-3080": 302.5, "rx-6950-xt": 300.7,
+    "rtx-2080-ti": 309.9, "rx-6800-xt": 278.0, "rx-6800": 279.7, "rx-7800-xt": 248.7,
+    "rtx-2080": 248.2, "rtx-3060-ti": 229.0, "rtx-4070": 203.7, "rx-7700-xt": 203.5,
+    "rtx-4060-ti-16gb": 258.6, "rtx-2070": 204.2, "rtx-4060": 199.5, "rx-6700-xt": 189.7,
+    "rtx-3070": 253.5, "rtx-3060": 171.0, "rtx-2060": 159.6, "rx-7600": 145.1,
+    "rtx-3050": 133.6, "gtx-1660-super": 129.9, "arc-a770": 127.6, "arc-a750": 119.1,
+    "rx-6600-xt": 164.4, "rx-6600": 140.6, "gtx-1060": 102.9, "rx-vega-64": 111.8,
+    "gtx-1650": 77.6, "rx-6500-xt": 88.5, "rx-580": 77.6, "rx-6400": 69.6, "gtx-1630": 50.3,
+    "rtx-4060-ti-8gb": 255.4
+},
+        // CS2 at 1440p Very High settings (from Python CS2_BENCHMARKS_1440P)
+        "cs2_1440p": {
+            "rtx-4090": 457.0, "rtx-4080": 362.4, "rx-7900-xtx": 323.2, "rtx-3090-ti": 321.5,
+            "rtx-3090": 294.8, "rtx-4070-ti": 284.5, "rx-7900-xt": 270.8, "rx-6900-xt": 267.0,
+            "rtx-3080": 256.5, "rx-6800-xt": 253.2, "rtx-4070": 230.4, "rtx-3070": 222.2,
+            "rtx-2080-ti": 212.5, "rx-6800": 207.7, "rx-7800-xt": 199.5, "rtx-3060-ti": 178.1,
+            "rtx-4060-ti-8gb": 171.1, "rtx-2080": 169.8, "rtx-4060-ti-16gb": 168.9, "rx-7700-xt": 156.2,
+            "rx-6700-xt": 152.2, "rtx-4060": 145.5, "rtx-2070": 136.5, "rx-5700-xt": 127.8,
+            "rtx-3060": 126.2, "rx-6600-xt": 115.6, "rtx-2060": 114.0, "arc-a770": 109.3,
+            "rx-7600": 101.4, "rx-6600": 100.1, "arc-a750": 99.5, "gtx-1660-super": 95.4,
+            "rtx-3050": 90.5, "rx-vega-64": 78.4, "gtx-1060": 70.0, "rx-6500-xt": 60.9,
+            "rx-580": 52.3, "rx-6400": 47.8, "gtx-1630": 33.4
+        },
+    
+}
+
+        // Game-specific base FPS for regression (when benchmarks are unavailable)
+const GAME_BASE_FPS = {
+  "blackops6": {
+    "1080p": { "low": 160, "medium": 140, "high": 120, "extreme": 100 },
+    "1440p": { "low": 135, "medium": 115, "high": 100, "extreme": 75 },
+    "4K": { "low": 85, "medium": 75, "high": 65, "extreme": 45 }
+  },
+  "cs2": {
+    "1080p": { "low": 400, "medium": 350, "high": 300, "max": 250 },
+    "1440p": { "low": 320, "medium": 280, "high": 240, "max": 200 },
+    "4K": { "low": 200, "medium": 180, "high": 150, "max": 120 }
+  },
+  "cyberpunk2077": {
+    "1080p": { "low": 120, "medium": 100, "high": 85 },
+    "1440p": { "low": 85, "medium": 70, "high": 60 },
+    "4K": { "low": 50, "medium": 40, "high": 35 }
+  },
+  "fortnite": {
+    "1080p": { "low": 220, "medium": 170, "high": 140, "ultra": 110 },
+    "1440p": { "low": 170, "medium": 140, "high": 110, "ultra": 85 },
+    "4K": { "low": 100, "medium": 85, "high": 70, "ultra": 50 }
+  },
+  "gta5": {
+    "1080p": { "low": 200, "medium": 180, "high": 150, "ultra": 120 },
+    "1440p": { "low": 160, "medium": 140, "high": 110, "ultra": 90 },
+    "4K": { "low": 90, "medium": 80, "high": 60, "ultra": 45 }
+  },
+  "kcd2": { // Assuming "kcd2" refers to Kingdom Come: Deliverance
+    "1080p": { "low": 150, "medium": 130, "high": 110, "ultra": 90 },
+    "1440p": { "low": 125, "medium": 105, "high": 85, "ultra": 65 },
+    "4K": { "low": 75, "medium": 65, "high": 55, "ultra": 40 }
+  }
+};
+
+// Game-specific CPU and GPU weights
+const GAME_WEIGHTS = {
+  "blackops6": {
+    "1080p": { cpu: 0.45, gpu: 0.55 },
+    "1440p": { cpu: 0.35, gpu: 0.65 },
+    "4K": { cpu: 0.25, gpu: 0.75 }
+  },
+  "cs2": {
+    "1080p": { cpu: 0.70, gpu: 0.30 },
+    "1440p": { cpu: 0.55, gpu: 0.45 },
+    "4K": { cpu: 0.40, gpu: 0.60 }
+  },
+  "cyberpunk2077": {
+    "1080p": { cpu: 0.4, gpu: 0.6 },
+    "1440p": { cpu: 0.3, gpu: 0.7 },
+    "4K": { cpu: 0.2, gpu: 0.8 }
+  },
+  "fortnite": {
+    "1080p": { cpu: 0.45, gpu: 0.55 },
+    "1440p": { cpu: 0.35, gpu: 0.65 },
+    "4K": { cpu: 0.25, gpu: 0.75 }
+  },
+  "gta5": {
+    "1080p": { cpu: 0.35, gpu: 0.65 },
+    "1440p": { cpu: 0.30, gpu: 0.70 },
+    "4K": { cpu: 0.25, gpu: 0.75 }
+  },
+  "kcd2": {
+    "1080p": { cpu: 0.4, gpu: 0.6 },
+    "1440p": { cpu: 0.3, gpu: 0.7 },
+    "4K": { cpu: 0.2, gpu: 0.8 }
+  }
+};
+function cleanName(name) {
+            return name.split(/[\(\,]/)[0].trim();
+        }
+
+        // Function to clean and match names to IDs
+        function findIdByName(name, type) {
+            const db = type === 'cpu' ? hardwareDB.cpus : hardwareDB.gpus;
+            name = name.toLowerCase().replace('videokarte gigabyte ', '').split(',')[0].trim();
+            for (const id in db) {
+                if (db[id].name.toLowerCase().includes(name)) {
+                    return id;
+                }
+            }
+            console.warn(`No match found for ${name}, using default ${type === 'cpu' ? 'core-i3-10100' : 'rtx-4070'}`);
+            return type === 'cpu' ? 'core-i3-10100' : 'rtx-4070';
+        }
+
+        function calculateCS2FPS(cpuId, gpuId, resolution, quality) {
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+            const referenceCpuPerf = 100.0; // i9-13900K as reference from Python
+
+            let baseFPS;
+
+            // Case 1: 1080p max settings with benchmark data
+            if (resolution === "1080p" && quality === "max" && BENCHMARKS["cs2_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["cs2_1080p"][gpuId];
+                const cpuScaling = 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.80, Math.min(1.30, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 2: 1440p max settings with benchmark data
+            else if (resolution === "1440p" && quality === "max" && BENCHMARKS["cs2_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["cs2_1440p"][gpuId];
+                const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.90, Math.min(1.20, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 3: Interpolate from 1080p benchmark data
+            else if (BENCHMARKS["cs2_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["cs2_1080p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.80, Math.min(1.30, 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf))));
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.20, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.75; // 1440p is ~75% of 1080p performance
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.15, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.45; // 4K is ~45% of 1080p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= 1.20;
+                else if (quality === "medium") baseFPS *= 1.40;
+                else if (quality === "low") baseFPS *= 1.60;
+            }
+            // Case 4: Interpolate from 1440p benchmark data
+            else if (BENCHMARKS["cs2_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["cs2_1440p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.80, Math.min(1.30, 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 1.33; // 1080p is ~133% of 1440p performance
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.20, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.15, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.60; // 4K is ~60% of 1440p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= 1.20;
+                else if (quality === "medium") baseFPS *= 1.40;
+                else if (quality === "low") baseFPS *= 1.60;
+            }
+            // Case 5: Fallback regression model
+            else {
+                const refCpuPerf = 100.0;
+                const refGpuPerf = 150.0;
+                const cpuFactor = cpuData.perf / refCpuPerf;
+                const gpuFactor = gpuData.perf / refGpuPerf;
+
+                const weights = GAME_WEIGHTS["cs2"][resolution];
+                const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+                const qualityMultipliers = { "low": 1.60, "medium": 1.40, "high": 1.20, "max": 1.0 };
+                const resolutionBase = GAME_BASE_FPS["cs2"];
+
+                baseFPS = resolutionBase[resolution] * perfScore * qualityMultipliers[quality];
+                if (cpuFactor < 0.8) {
+                    baseFPS *= (0.7 + 0.3 * cpuFactor);
+                }
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        function calculateBlackOps6FPS(cpuId, gpuId, resolution, quality) {
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+            const referenceCpuPerf = 150.0; // Ryzen 7 7800X3D as reference
+
+            let baseFPS;
+
+            // Case 1: Direct benchmark data for 1080p extreme
+            if (resolution === "1080p" && quality === "extreme" && BENCHMARKS["blackops6_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["blackops6_1080p"][gpuId];
+                const cpuScaling = 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.85, Math.min(1.2, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 2: Direct benchmark data for 1440p extreme
+            else if (resolution === "1440p" && quality === "extreme" && BENCHMARKS["blackops6_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["blackops6_1440p"][gpuId];
+                const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.90, Math.min(1.15, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 3: Interpolate from 1080p benchmark data
+            else if (BENCHMARKS["blackops6_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["blackops6_1080p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.2, 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf))));
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.15, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.74; // 1440p is ~74% of 1080p performance
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.1, 0.95 + (0.05 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.45; // 4K is ~45% of 1080p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.25 : 1.2;
+                else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.4 : 1.3;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.7 : resolution === "1440p" ? 1.6 : 1.5;
+            }
+            // Case 4: Interpolate from 1440p benchmark data
+            else if (BENCHMARKS["blackops6_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["blackops6_1440p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.2, 0.75 + (0.25 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 1.35; // 1080p is ~135% of 1440p performance
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.15, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.1, 0.95 + (0.05 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.6; // 4K is ~60% of 1440p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.25 : 1.2;
+                else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.4 : 1.3;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.7 : resolution === "1440p" ? 1.6 : 1.5;
+            }
+            // Case 5: Regression model for unavailable data
+            else {
+                const refCpuPerf = 100.0;
+                const refGpuPerf = 100.0;
+                const cpuFactor = cpuData.perf / refCpuPerf;
+                const gpuFactor = gpuData.perf / refGpuPerf;
+
+                const weights = GAME_WEIGHTS["blackops6"][resolution];
+                const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+                const qualityMultipliers = { "low": 1.6, "medium": 1.4, "high": 1.25, "extreme": 1.0 };
+                const resolutionBase = GAME_BASE_FPS["blackops6"];
+
+                const gpuPerf = gpuData.perf;
+                if (gpuPerf > 150) {
+                    baseFPS = resolutionBase[resolution] * 2.3 * qualityMultipliers[quality] * Math.pow(perfScore, 0.75);
+                } else if (gpuPerf > 120) {
+                    baseFPS = resolutionBase[resolution] * 1.9 * qualityMultipliers[quality] * Math.pow(perfScore, 0.8);
+                } else if (gpuPerf > 90) {
+                    baseFPS = resolutionBase[resolution] * 1.6 * qualityMultipliers[quality] * Math.pow(perfScore, 0.85);
+                } else if (gpuPerf > 60) {
+                    baseFPS = resolutionBase[resolution] * 1.3 * qualityMultipliers[quality] * Math.pow(perfScore, 0.9);
+                } else {
+                    baseFPS = resolutionBase[resolution] * 1.0 * qualityMultipliers[quality] * Math.pow(perfScore, 0.95);
+                }
+
+                if (cpuFactor < 1.0 && gpuPerf > 100) {
+                    baseFPS *= resolution === "1080p" ? (0.7 + 0.3 * cpuFactor) :
+                              resolution === "1440p" ? (0.8 + 0.2 * cpuFactor) :
+                              (0.9 + 0.1 * cpuFactor);
+                }
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        // FPS calculation function for GTA V
+        function calculateGtaVFPS(cpuId, gpuId, resolution, quality) {
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+            const referenceCpuPerf = 150.0;
+
+            let baseFPS;
+
+            // Case 1: Direct benchmark data for 1080p high
+            if (resolution === "1080p" && quality === "high" && BENCHMARKS["gta5_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["gta5_1080p"][gpuId];
+                const cpuScaling = 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.85, Math.min(1.15, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 2: Direct benchmark data for 1440p high
+            else if (resolution === "1440p" && quality === "high" && BENCHMARKS["gta5_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["gta5_1440p"][gpuId];
+                const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.90, Math.min(1.10, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 3: Interpolate from 1080p benchmark data
+            else if (BENCHMARKS["gta5_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["gta5_1080p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.77; // 1440p is ~77% of 1080p performance
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.45; // 4K is ~45% of 1080p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.2 : resolution === "1440p" ? 1.25 : 1.3;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.4 : resolution === "1440p" ? 1.45 : 1.5;
+            }
+            // Case 4: Interpolate from 1440p benchmark data
+            else if (BENCHMARKS["gta5_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["gta5_1440p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 1.30; // 1080p is ~130% of 1440p performance
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.58; // 4K is ~58% of 1440p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.2 : resolution === "1440p" ? 1.25 : 1.3;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.4 : resolution === "1440p" ? 1.45 : 1.5;
+            }
+            // Case 5: Regression model for unavailable data
+            else {
+                const refCpuPerf = 100.0;
+                const refGpuPerf = 100.0;
+                const cpuFactor = cpuData.perf / refCpuPerf;
+                const gpuFactor = gpuData.perf / refGpuPerf;
+
+                const weights = GAME_WEIGHTS["gta5"][resolution];
+                const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+                const qualityMultipliers = { "low": 1.4, "medium": 1.2, "high": 1.0 };
+                const resolutionBase = GAME_BASE_FPS["gta5"];
+
+                const gpuPerf = gpuData.perf;
+                if (gpuPerf > 150) {
+                    baseFPS = resolutionBase[resolution] * 2.0 * qualityMultipliers[quality] * Math.pow(perfScore, 0.85);
+                } else if (gpuPerf > 120) {
+                    baseFPS = resolutionBase[resolution] * 1.8 * qualityMultipliers[quality] * Math.pow(perfScore, 0.90);
+                } else if (gpuPerf > 90) {
+                    baseFPS = resolutionBase[resolution] * 1.5 * qualityMultipliers[quality] * Math.pow(perfScore, 0.95);
+                } else if (gpuPerf > 60) {
+                    baseFPS = resolutionBase[resolution] * 1.2 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+                } else {
+                    baseFPS = resolutionBase[resolution] * 1.0 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+                }
+
+                if (cpuFactor < 1.0 && gpuPerf > 100) {
+                    baseFPS *= resolution === "1080p" ? (0.8 + 0.2 * cpuFactor) :
+                              resolution === "1440p" ? (0.85 + 0.15 * cpuFactor) :
+                              (0.9 + 0.1 * cpuFactor);
+                }
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        function calculateFortniteFPS(cpuId, gpuId, resolution, quality) {
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+            const referenceCpuPerf = 150.0;
+
+            let baseFPS;
+
+            // Case 1: Direct benchmark data for 1080p high
+            if (resolution === "1080p" && quality === "high" && BENCHMARKS["fortnite_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["fortnite_1080p"][gpuId];
+                const cpuScaling = 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.85, Math.min(1.15, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 2: Direct benchmark data for 1440p high
+            else if (resolution === "1440p" && quality === "high" && BENCHMARKS["fortnite_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["fortnite_1440p"][gpuId];
+                const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.90, Math.min(1.10, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 3: Interpolate from 1080p benchmark data
+            else if (BENCHMARKS["fortnite_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["fortnite_1080p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.82; // 1440p is ~82% of 1080p performance
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.50; // 4K is ~50% of 1080p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+            }
+            // Case 4: Interpolate from 1440p benchmark data
+            else if (BENCHMARKS["fortnite_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["fortnite_1440p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 1.22; // 1080p is ~122% of 1440p performance
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.61; // 4K is ~61% of 1440p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+            }
+            // Case 5: Regression model for unavailable data
+            else {
+                const refCpuPerf = 100.0;
+                const refGpuPerf = 100.0;
+                const cpuFactor = cpuData.perf / refCpuPerf;
+                const gpuFactor = gpuData.perf / refGpuPerf;
+
+                const weights = GAME_WEIGHTS["fortnite"][resolution];
+                const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+                const qualityMultipliers = { "low": 1.3, "medium": 1.15, "high": 1.0 };
+                const resolutionBase = GAME_BASE_FPS["fortnite"];
+
+                const gpuPerf = gpuData.perf;
+                if (gpuPerf > 150) {
+                    baseFPS = resolutionBase[resolution] * 2.0 * qualityMultipliers[quality] * Math.pow(perfScore, 0.85);
+                } else if (gpuPerf > 120) {
+                    baseFPS = resolutionBase[resolution] * 1.8 * qualityMultipliers[quality] * Math.pow(perfScore, 0.90);
+                } else if (gpuPerf > 90) {
+                    baseFPS = resolutionBase[resolution] * 1.5 * qualityMultipliers[quality] * Math.pow(perfScore, 0.95);
+                } else if (gpuPerf > 60) {
+                    baseFPS = resolutionBase[resolution] * 1.2 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+                } else {
+                    baseFPS = resolutionBase[resolution] * 1.0 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+                }
+
+                if (cpuFactor < 1.0 && gpuPerf > 100) {
+                    baseFPS *= resolution === "1080p" ? (0.8 + 0.2 * cpuFactor) :
+                              resolution === "1440p" ? (0.85 + 0.15 * cpuFactor) :
+                              (0.9 + 0.1 * cpuFactor);
+                }
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        // General FPS calculation function
+        function calculateFPS(cpuId, gpuId, resolution, quality, game) {
+            if (game === "gta5") return calculateGtaVFPS(cpuId, gpuId, resolution, quality);
+            else if (game === "kcd2") return calculateKingdomComeFPS(cpuId, gpuId, resolution, quality);
+            else if (game === "cyberpunk2077") return calculateCyberpunkFPS(cpuId, gpuId, resolution, quality);
+            else if (game === "fortnite") return calculateFortniteFPS(cpuId, gpuId, resolution, quality);
+            else if (game === "blackops6") return calculateBlackOps6FPS(cpuId, gpuId, resolution, quality);
+            else if (game === "cs2") return calculateCS2FPS(cpuId, gpuId, resolution, quality);
+
+            // [Existing generic calculation logic remains unchanged]
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+
+            if (resolution === "1080p" && quality === "high" && BENCHMARKS[game] && BENCHMARKS[game][gpuId]) {
+                let baseFPS = BENCHMARKS[game][gpuId];
+                const referenceCpuPerf = 150.0;
+                const cpuScaling = 0.8 + 0.2 * (cpuData.perf / referenceCpuPerf);
+                const cpuScalingClamped = Math.max(0.85, Math.min(1.15, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+                const minFPS = Math.round(baseFPS * 0.95);
+                const maxFPS = Math.round(baseFPS * 1.05);
+                return `${minFPS}-${maxFPS}`;
+            }
+
+            const refCpuPerf = 100.0;
+            const refGpuPerf = 100.0;
+            const cpuFactor = cpuData.perf / refCpuPerf;
+            const gpuFactor = gpuData.perf / refGpuPerf;
+
+            const weights = GAME_WEIGHTS[game][resolution];
+            const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+            const qualityMultipliers = { "low": 1.4, "medium": 1.2, "high": 1.0 };
+            const resolutionBase = GAME_BASE_FPS[game];
+
+            let baseFPS = resolutionBase[resolution] * qualityMultipliers[quality] * Math.pow(perfScore, 0.9);
+
+            if (cpuFactor < 1.0 && gpuFactor > 1.0) {
+                baseFPS *= 0.85 + 0.15 * cpuFactor;
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        // FPS calculation function for Kingdom Come: Deliverance 2 (kcd2) - unchanged
+        function calculateKingdomComeFPS(cpuId, gpuId, resolution, quality) {
+    const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+    const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+    const referenceCpuPerf = 150.0;
+
+    let baseFPS;
+
+    // Case 1: Direct benchmark data for 1080p High
+    if (resolution === "1080p" && quality === "high" && BENCHMARKS["kcd2_1080p"][gpuId]) {
+        baseFPS = BENCHMARKS["kcd2_1080p"][gpuId];
+        const cpuScaling = 0.80 + (0.20 * (cpuData.perf / referenceCpuPerf));
+        const cpuScalingClamped = Math.max(0.85, Math.min(1.2, cpuScaling));
+        baseFPS *= cpuScalingClamped;
+    }
+    // Case 2: Direct benchmark data for 1440p High
+    else if (resolution === "1440p" && quality === "high" && BENCHMARKS["kcd2_1440p"][gpuId]) {
+        baseFPS = BENCHMARKS["kcd2_1440p"][gpuId];
+        const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+        const cpuScalingClamped = Math.max(0.90, Math.min(1.15, cpuScaling));
+        baseFPS *= cpuScalingClamped;
+    }
+    // Case 3: Interpolate from 1080p benchmark data
+    else if (BENCHMARKS["kcd2_1080p"][gpuId]) {
+        baseFPS = BENCHMARKS["kcd2_1080p"][gpuId];
+        let cpuScaling;
+        if (resolution === "1080p") {
+            cpuScaling = Math.max(0.85, Math.min(1.2, 0.80 + (0.20 * (cpuData.perf / referenceCpuPerf))));
+        } else if (resolution === "1440p") {
+            cpuScaling = Math.max(0.90, Math.min(1.15, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+            baseFPS *= 0.71; // 1440p adjustment
+        } else { // 4K
+            cpuScaling = Math.max(0.95, Math.min(1.10, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+            baseFPS *= 0.41; // 4K adjustment
+        }
+        baseFPS *= cpuScaling;
+
+        if (quality === "high") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+        else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+        else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.55 : 1.6;
+    }
+    // Case 4: Interpolate from 1440p benchmark data
+    else if (BENCHMARKS["kcd2_1440p"][gpuId]) {
+        baseFPS = BENCHMARKS["kcd2_1440p"][gpuId];
+        let cpuScaling;
+        if (resolution === "1080p") {
+            cpuScaling = Math.max(0.85, Math.min(1.2, 0.80 + (0.20 * (cpuData.perf / referenceCpuPerf))));
+            baseFPS *= 1.41; // 1080p is ~141% of 1440p performance
+        } else if (resolution === "1440p") {
+            cpuScaling = Math.max(0.90, Math.min(1.15, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+        } else { // 4K
+            cpuScaling = Math.max(0.95, Math.min(1.10, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+            baseFPS *= 0.58; // 4K is ~58% of 1440p performance
+        }
+        baseFPS *= cpuScaling;
+
+        if (quality === "high") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+        else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+        else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.55 : 1.6;
+    }
+    // Case 5: Regression model for unavailable data
+    else {
+        const refCpuPerf = 100.0;
+        const refGpuPerf = 100.0;
+        const cpuFactor = cpuData.perf / refCpuPerf;
+        const gpuFactor = gpuData.perf / refGpuPerf;
+
+        const weights = GAME_WEIGHTS["kcd2"][resolution];
+        const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+        const qualityMultipliers = { "low": 1.5, "medium": 1.3, "high": 1.0, "ultra": 0.9 };
+        const resolutionBase = GAME_BASE_FPS["kcd2"];
+
+        const gpuPerf = gpuData.perf;
+        if (gpuPerf > 150) {
+            baseFPS = resolutionBase[resolution] * 2.1 * qualityMultipliers[quality] * Math.pow(perfScore, 0.8);
+        } else if (gpuPerf > 120) {
+            baseFPS = resolutionBase[resolution] * 1.9 * qualityMultipliers[quality] * Math.pow(perfScore, 0.85);
+        } else if (gpuPerf > 90) {
+            baseFPS = resolutionBase[resolution] * 1.6 * qualityMultipliers[quality] * Math.pow(perfScore, 0.9);
+        } else if (gpuPerf > 60) {
+            baseFPS = resolutionBase[resolution] * 1.3 * qualityMultipliers[quality] * Math.pow(perfScore, 0.95);
+        } else {
+            baseFPS = resolutionBase[resolution] * 1.0 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+        }
+
+        if (cpuFactor < 1.0 && gpuPerf > 100) {
+            baseFPS *= resolution === "1080p" ? (0.8 + 0.2 * cpuFactor) :
+                      resolution === "1440p" ? (0.85 + 0.15 * cpuFactor) :
+                      (0.9 + 0.1 * cpuFactor);
+        }
+    }
+
+    baseFPS = Math.max(baseFPS, 1.0);
+    const minFPS = Math.round(baseFPS * 0.95);
+    const maxFPS = Math.round(baseFPS * 1.05);
+    return `${minFPS}-${maxFPS}`;
+}
+
+        function calculateCyberpunkFPS(cpuId, gpuId, resolution, quality) {
+            const cpuData = hardwareDB.cpus[cpuId] || { perf: 50.0, power: 65 };
+            const gpuData = hardwareDB.gpus[gpuId] || { perf: 90.7, power: 200 };
+            const referenceCpuPerf = 150.0; // Ryzen 7 7800X3D as reference
+
+            let baseFPS;
+
+            // Case 1: Direct benchmark data for 1080p ultra
+            if (resolution === "1080p" && quality === "ultra" && BENCHMARKS["cyberpunk2077_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["cyberpunk2077_1080p"][gpuId];
+                const cpuScaling = 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.85, Math.min(1.15, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 2: Direct benchmark data for 1440p ultra
+            else if (resolution === "1440p" && quality === "ultra" && BENCHMARKS["cyberpunk2077_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["cyberpunk2077_1440p"][gpuId];
+                const cpuScaling = 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf));
+                const cpuScalingClamped = Math.max(0.90, Math.min(1.10, cpuScaling));
+                baseFPS *= cpuScalingClamped;
+            }
+            // Case 3: Interpolate from 1080p benchmark data
+            else if (BENCHMARKS["cyberpunk2077_1080p"][gpuId]) {
+                baseFPS = BENCHMARKS["cyberpunk2077_1080p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.70; // 1440p is ~70% of 1080p performance
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.41; // 4K is ~41% of 1080p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+                else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.55 : 1.6;
+            }
+            // Case 4: Interpolate from 1440p benchmark data
+            else if (BENCHMARKS["cyberpunk2077_1440p"][gpuId]) {
+                baseFPS = BENCHMARKS["cyberpunk2077_1440p"][gpuId];
+                let cpuScaling;
+                if (resolution === "1080p") {
+                    cpuScaling = Math.max(0.85, Math.min(1.15, 0.8 + (0.2 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 1.43; // 1080p is ~143% of 1440p performance
+                } else if (resolution === "1440p") {
+                    cpuScaling = Math.max(0.90, Math.min(1.10, 0.85 + (0.15 * (cpuData.perf / referenceCpuPerf))));
+                } else { // 4K
+                    cpuScaling = Math.max(0.95, Math.min(1.05, 0.90 + (0.10 * (cpuData.perf / referenceCpuPerf))));
+                    baseFPS *= 0.58; // 4K is ~58% of 1440p performance
+                }
+                baseFPS *= cpuScaling;
+
+                if (quality === "high") baseFPS *= resolution === "1080p" ? 1.15 : resolution === "1440p" ? 1.20 : 1.25;
+                else if (quality === "medium") baseFPS *= resolution === "1080p" ? 1.3 : resolution === "1440p" ? 1.35 : 1.4;
+                else if (quality === "low") baseFPS *= resolution === "1080p" ? 1.5 : resolution === "1440p" ? 1.55 : 1.6;
+            }
+            // Case 5: Regression model for unavailable data
+            else {
+                const refCpuPerf = 100.0;
+                const refGpuPerf = 100.0;
+                const cpuFactor = cpuData.perf / refCpuPerf;
+                const gpuFactor = gpuData.perf / refGpuPerf;
+
+                const weights = GAME_WEIGHTS["cyberpunk2077"][resolution];
+                const perfScore = weights.cpu * cpuFactor + weights.gpu * gpuFactor;
+
+                const qualityMultipliers = { "low": 1.5, "medium": 1.3, "high": 1.15, "ultra": 1.0 };
+                const resolutionBase = GAME_BASE_FPS["cyberpunk2077"];
+
+                const gpuPerf = gpuData.perf;
+                if (gpuPerf > 150) {
+                    baseFPS = resolutionBase[resolution] * 2.1 * qualityMultipliers[quality] * Math.pow(perfScore, 0.8);
+                } else if (gpuPerf > 120) {
+                    baseFPS = resolutionBase[resolution] * 1.9 * qualityMultipliers[quality] * Math.pow(perfScore, 0.85);
+                } else if (gpuPerf > 90) {
+                    baseFPS = resolutionBase[resolution] * 1.6 * qualityMultipliers[quality] * Math.pow(perfScore, 0.9);
+                } else if (gpuPerf > 60) {
+                    baseFPS = resolutionBase[resolution] * 1.3 * qualityMultipliers[quality] * Math.pow(perfScore, 0.95);
+                } else {
+                    baseFPS = resolutionBase[resolution] * 1.0 * qualityMultipliers[quality] * Math.pow(perfScore, 1.0);
+                }
+
+                if (cpuFactor < 1.0 && gpuPerf > 100) {
+                    baseFPS *= resolution === "1080p" ? (0.8 + 0.2 * cpuFactor) :
+                              resolution === "1440p" ? (0.85 + 0.15 * cpuFactor) :
+                              (0.9 + 0.1 * cpuFactor);
+                }
+            }
+
+            baseFPS = Math.max(baseFPS, 1.0);
+            const minFPS = Math.round(baseFPS * 0.95);
+            const maxFPS = Math.round(baseFPS * 1.05);
+            return `${minFPS}-${maxFPS}`;
+        }
+
+        function getIdFromModel(model) {
+            return model.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        // Define variables and updateFPS function in global scope
+        let currentResolution = '1080p';
+        let currentQuality = 'medium';
+        let totalPrice = 0; // Define totalPrice globally
+
+        function updateFPS() {
+            const cpuData = JSON.parse(localStorage.getItem('selectedCPU'));
+            const gpuData = JSON.parse(localStorage.getItem('selectedGPU'));
+            const games = ['gta5', 'kcd2', 'fortnite', 'blackops6', 'cyberpunk2077', 'cs2'];
+
+            games.forEach((game) => {
+                const fpsElement = document.getElementById(`fps-${game === 'cyberpunk2077' ? 'cyberpunk' : game}`);
+
+                // Add blur and pop-out animation
+                fpsElement.style.opacity = '0';
+                fpsElement.style.filter = 'blur(8px)';
+                fpsElement.style.transform = 'scale(0.8)';
+                fpsElement.textContent = '...'; // Show calculating
+
+                // Remove previous FPS class if it exists
+                if (fpsElement.classList.contains('has-fps')) {
+                    fpsElement.classList.remove('has-fps');
+                }
+
+                // Use a timeout to create the animation effect
+                setTimeout(() => {
+                    if (cpuData && gpuData) {
+                        // Get standardized IDs from models
+                        let cpuId = getIdFromModel(cpuData.model);
+                        let gpuId = getIdFromModel(gpuData.model);
+
+                        // Fallback if IDs are not in hardwareDB
+                        if (!hardwareDB.cpus[cpuId]) {
+                            console.warn(`CPU ID ${cpuId} not found, using default 'core-i3-10100'`);
+                            cpuId = 'core-i3-10100';
+                        }
+                        if (!hardwareDB.gpus[gpuId]) {
+                            console.warn(`GPU ID ${gpuId} not found, using default 'rtx-4070'`);
+                            gpuId = 'rtx-4070';
+                        }
+
+                        // Calculate real FPS
+                        const fps = calculateFPS(cpuId, gpuId, currentResolution, currentQuality, game);
+                        fpsElement.textContent = `${fps} FPS`;
+                    } else {
+                        // Display fallback if components are missing
+                        fpsElement.textContent = 'FPS: -';
+                    }
+
+                    // Add the has-fps class for glow effect and animate back
+                    fpsElement.classList.add('has-fps');
+                    fpsElement.style.opacity = '1';
+                    fpsElement.style.filter = 'blur(0)';
+                    fpsElement.style.transform = 'scale(1)';
+                }, 300); // 0.3 sec delay for the animation
+            });
+        }
+        </script>
+
+</body>
+</html>
